@@ -219,6 +219,8 @@ class DBFunc
         return null;
     }
 
+    
+
     public function insertIBTracsStorm($data)
 {
     $stmt = $this->conn->prepare("
@@ -247,6 +249,38 @@ class DBFunc
         echo "Insert Error: " . $stmt->error;
         return false;
     }
+}
+
+public function updateIBTracsStorm($id, $data) {
+    $stmt = $this->conn->prepare("
+        UPDATE IBTrACS_Storms SET
+            sid = ?, name = ?, basin = ?, agency = ?, lat = ?, lon = ?,
+            wind_kts = ?, pressure_mb = ?, timestamp = ?, storm_type = ?,
+            nature = ?, track_type = ?, track_points = ?, start_date = ?, end_date = ?
+        WHERE id = ?
+    ");
+
+    $stmt->bind_param("ssssddiissssiissi",
+        $data['sid'],
+        $data['name'],
+        $data['basin'],
+        $data['agency'],
+        $data['lat'],
+        $data['lon'],
+        $data['wind_kts'],
+        $data['pressure_mb'],
+        $data['timestamp'],
+        $data['storm_type'],
+        $data['nature'],
+        $data['track_type'],
+        $data['track_points'],
+        $data['start_date'],
+        $data['end_date'],
+        $id
+    );
+
+    $stmt->execute();
+    $stmt->close();
 }
 
 public function getIBTracsStorms($limit = 100)
@@ -341,19 +375,19 @@ public function insertLifecycleEvent($data)
     return $stmt->execute();
 }
 
-public function insertProxyStorm($data)
-{
-    $stmt = $this->conn->prepare("
-        INSERT INTO Proxy_Storms (site_name, region, proxy_type, storm_date_range, estimated_intensity, notes, source_reference)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    ");
-    $stmt->bind_param("sssssss",
-        $data['site_name'], $data['region'], $data['proxy_type'],
-        $data['storm_date_range'], $data['estimated_intensity'],
-        $data['notes'], $data['source_reference']
-    );
-    return $stmt->execute();
-}
+// public function insertProxyStorm($data)
+// {
+//     $stmt = $this->conn->prepare("
+//         INSERT INTO Proxy_Storms (site_name, region, proxy_type, storm_date_range, estimated_intensity, notes, source_reference)
+//         VALUES (?, ?, ?, ?, ?, ?, ?)
+//     ");
+//     $stmt->bind_param("sssssss",
+//         $data['site_name'], $data['region'], $data['proxy_type'],
+//         $data['storm_date_range'], $data['estimated_intensity'],
+//         $data['notes'], $data['source_reference']
+//     );
+//     return $stmt->execute();
+// }
 
 public function calculateACEForStorm($sid)
 {
@@ -389,5 +423,56 @@ public function getStrongestStorms($limit = 10)
     $stmt->execute();
     return $stmt->get_result();
 }
+
+// public function insertPaleoStorm($data)
+// {
+//     $stmt = $this->conn->prepare("
+//         INSERT INTO Proxy_Storms (
+//             site, proxy_type, start_year, end_year, frequency_estimate,
+//             uncertainty_years, source, lat, lon
+//         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+//     ");
+
+//     $stmt->bind_param(
+//         "ssiiidssd",
+//         $data['location_found'],
+//         $data['source_type'],
+//         $data['year'],      // start_year
+//         $data['year'],      // end_year (same as start for now)
+//         // $dummyFreq,         // use placeholder if not inputted
+//         // $dummyUncertainty,  // use placeholder if not inputted
+//         $data['description'],
+//         // $dummyLat,
+//         // $dummyLon
+//     );
+
+//     // Fallback dummy values (you can extend the form later)
+//     // $dummyFreq = 1.0;
+//     // $dummyUncertainty = 0;
+//     // $dummyLat = 0.0;
+//     // $dummyLon = 0.0;
+
+//     $stmt->execute();
+//     $stmt->close();
+// }
+
+// public function deletePaleoStorm($id)
+// {
+//     $stmt = $this->conn->prepare("DELETE FROM Proxy_Storms WHERE id = ?");
+//     $stmt->bind_param("i", $id);
+//     $stmt->execute();
+//     $stmt->close();
+// }
+
+// public function showPaleoStorm($id)
+// {
+//     $stmt = $this->conn->prepare("SELECT * FROM Proxy_Storms WHERE id = ?");
+//     $stmt->bind_param("i", $id);
+//     $stmt->execute();
+//     $result = $stmt->get_result();
+//     $storm = $result->fetch_assoc();
+//     $stmt->close();
+//     return $storm;
+// }
 
 }
