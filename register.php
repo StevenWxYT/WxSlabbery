@@ -1,8 +1,10 @@
 <?php
-include("php/function.php");
+require_once 'php/db.php';
+require_once 'php/function.php';
 
 $db = new DBConn();
-$user = new DBFunc($db->conn);
+$conn = $db->getConnection();      // ✅ Correctly retrieve the connection
+$user = new DBFunc($conn);         // ✅ Pass it to DBFunc
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
@@ -18,14 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register</title>
     <link rel="stylesheet" href="master.css">
 </head>
-
 <body>
     <main>
         <h2>Register Account</h2>
@@ -75,5 +75,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         });
     </script>
 </body>
-
 </html>

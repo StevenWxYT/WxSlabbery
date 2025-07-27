@@ -486,3 +486,47 @@ button[name="delete"]:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
 }
+
+/* Optional: style remember-me */
+.remember-me {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #444;
+}
+
+.remember-me input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.admin-buttons {
+  margin-bottom: 20px;
+}
+.admin-buttons .btn {
+  margin-right: 10px;
+}
+
+.form-box {
+  max-width: 500px;
+  padding: 20px;
+  background-color: #f7f9fc;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.form-box label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+.form-box input[type="text"],
+.form-box input[type="date"],
+.form-box input[type="number"],
+.form-box input[type="file"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}

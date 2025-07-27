@@ -12,17 +12,24 @@ $functions = new DBFunc($conn);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Tropical Cyclone Admin</title>
   <link rel="stylesheet" href="../master.css">
 </head>
+
 <body>
 
   <h1>🌪️ Tropical Cyclone Admin</h1>
 
-  <a class="button" href="tc_add.php">➕ Add Cyclone</a>
-  <a class="button" href="tc_index.php">⬅ Back to TC Index</a>
+  <div class="admin-buttons">
+    <a class="btn" href="tc_add.php">➕ Add Cyclone</a>
+    <a class="btn" href="tc_index.php">⬅ Back to TC Index</a>
+    <a class="btn" href="tc_export.php?format=csv" target="_blank">📁 Export CSV</a>
+    <a class="btn" href="tc_export.php?format=pdf" target="_blank">📄 Export PDF</a>
+  </div>
+
 
   <table>
     <thead>
@@ -40,30 +47,34 @@ $functions = new DBFunc($conn);
     </thead>
     <tbody>
       <?php
-        $result = $conn->query("SELECT * FROM tcdatabase ORDER BY start_date DESC");
-        if ($result && $result->num_rows > 0):
-          while ($row = $result->fetch_assoc()):
+      $result = $conn->query("SELECT * FROM tcdatabase ORDER BY start_date DESC");
+      if ($result && $result->num_rows > 0):
+        while ($row = $result->fetch_assoc()):
       ?>
+          <tr>
+            <td><?= htmlspecialchars($row['id']) ?></td>
+            <td><?= htmlspecialchars($row['storm_id']) ?></td>
+            <td><?= htmlspecialchars($row['name']) ?></td>
+            <td><?= htmlspecialchars($row['basin']) ?></td>
+            <td><?= htmlspecialchars($row['wind_speed']) ?></td>
+            <td><?= htmlspecialchars($row['pressure']) ?></td>
+            <td><?= htmlspecialchars($row['start_date']) ?></td>
+            <td><?= htmlspecialchars($row['end_date']) ?></td>
+            <td>
+              <a href="tc_view.php?id=<?= $row['id'] ?>">🔍 View</a> |
+              <a href="tc_edit.php?id=<?= $row['id'] ?>">✏️ Edit</a> |
+              <a href="tc_delete.php?id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this record?');">🗑️ Delete</a>
+            </td>
+          </tr>
+        <?php endwhile;
+      else: ?>
         <tr>
-          <td><?= htmlspecialchars($row['id']) ?></td>
-          <td><?= htmlspecialchars($row['storm_id']) ?></td>
-          <td><?= htmlspecialchars($row['name']) ?></td>
-          <td><?= htmlspecialchars($row['basin']) ?></td>
-          <td><?= htmlspecialchars($row['wind_speed']) ?></td>
-          <td><?= htmlspecialchars($row['pressure']) ?></td>
-          <td><?= htmlspecialchars($row['start_date']) ?></td>
-          <td><?= htmlspecialchars($row['end_date']) ?></td>
-          <td>
-            <a href="tc_view.php?id=<?= $row['id'] ?>">🔍 View</a> |
-            <a href="tc_edit.php?id=<?= $row['id'] ?>">✏️ Edit</a> |
-            <a href="tc_delete.php?id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this record?');">🗑️ Delete</a>
-          </td>
+          <td colspan="9">No cyclone records found.</td>
         </tr>
-      <?php endwhile; else: ?>
-        <tr><td colspan="9">No cyclone records found.</td></tr>
       <?php endif; ?>
     </tbody>
   </table>
 
 </body>
+
 </html>

@@ -1,3 +1,15 @@
+<?php
+require_once 'php/function.php';
+$db = new DBConn();
+$func = new DBFunc($db->getConnection());
+$func->checkRememberMe();
+
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,11 +36,15 @@
     <div class="dashboard-buttons">
       <div class="dashboard-card" data-tooltip="Recent cyclone database entries">
         <img src="img/db_preview.jpg" alt="TC Database">
-        <button onclick="location.href='tropical_cyclone/tc_index.php'">Cyclone Database</button>
+        <button onclick="location.href='tropical_cyclone/tc_admin.php'">Cyclone Database</button>
+      </div>
+      <div class="dashboard-card" data-tooltip="Recent cyclone database entries">
+        <img src="img/db_preview.jpg" alt="TC Database">
+        <button onclick="location.href='tropical_cyclone/ibtracs_admin.php'">IBTrACS Records</button>
       </div>
       <div class="dashboard-card" data-tooltip="Recent tornado database entries">
         <img src="img/db_preview.jpg" alt="Tornado Database">
-        <button onclick="location.href='tornado/tornado_index.php'">Tornado Database</button>
+        <button onclick="location.href='tornado/tornado_admin.php'">Tornado Database</button>
       </div>
       <!-- <div class="dashboard-card pulse" data-tooltip="Live map of tropical systems">
         <img src="img/live_map_preview.jpg" alt="Live Map">
@@ -164,7 +180,7 @@
       </div> -->
     </div>
     <div class="form-action-bar">
-      <button onclick="window.location.href='tc_admin.php'">Manage Cyclones</button>
+      <button onclick="window.location.href='tropical_cyclone/tc_admin.php'">Manage Cyclones</button>
       <button class="logout-btn" onclick="window.location.href='logout.php'">Logout</button>
     </div>
   </main>

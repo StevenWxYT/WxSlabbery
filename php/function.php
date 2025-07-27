@@ -1,6 +1,37 @@
 <?php
 include("db.php"); // Assuming this contains your DBConn class
 
+// Check if TCPDF is available
+if (!class_exists('TCPDF')) {
+    require_once __DIR__ . '/tcpdf/tcpdf.php';
+}
+
+// Custom TCPDF class with optional header/footer
+
+/**
+ * Custom PDF class for cyclone reports.
+ * @extends TCPDF
+ * @noinspection PhpUndefinedMethodInspection
+ */
+
+class WxPDF extends TCPDF {
+
+    // Page header
+    public function Header() {
+        $this->SetFont('helvetica', 'B', 14);
+        $this->Cell(0, 10, '🌪️ WxSlabbery Tropical Cyclone Report', 0, 1, 'C');
+        $this->SetFont('helvetica', '', 10);
+        $this->Cell(0, 5, 'Generated on ' . date('Y-m-d'), 0, 1, 'C');
+        $this->Ln(4);
+    }
+
+    // Page footer
+    public function Footer() {
+        $this->SetY(-15);
+        $this->SetFont('helvetica', 'I', 8);
+        $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, 0, 'C');
+    }
+}
 class DBFunc
 {
     public function __construct($db)
@@ -24,39 +55,80 @@ class DBFunc
     }
 
     // --- LOGIN USER ---
-    public function loginUser($email, $pwd)
-    {
-        if (session_status() === PHP_SESSION_NONE) session_start();
+public function loginUser($email, $pwd)
+{
+    if (session_status() === PHP_SESSION_NONE) session_start();
 
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
+    $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+        if (password_verify($pwd, $user["password"])) {
+            $_SESSION['username'] = $user['username'];
+
+            // If "Remember Me" checked
+            if (!empty($_POST['remember'])) {
+                $token = bin2hex(random_bytes(32));
+                setcookie("rememberme", $token, time() + (86400 * 30), "/", "", false, true); // HttpOnly cookie, valid for 30 days
+
+                $update = $this->conn->prepare("UPDATE users SET remember_token = ? WHERE email = ?");
+                $update->bind_param("ss", $token, $email);
+                $update->execute();
+            }
+
+            header('Location: index.php');
+            exit();
+        } else {
+            echo "Invalid password.";
+        }
+    } else {
+        echo "User not found.";
+    }
+}
+
+public function checkRememberMe()
+{
+    if (session_status() === PHP_SESSION_NONE) session_start();
+
+    if (!isset($_SESSION['username']) && isset($_COOKIE['rememberme'])) {
+        $token = $_COOKIE['rememberme'];
+        $stmt = $this->conn->prepare("SELECT username FROM users WHERE remember_token = ?");
+        $stmt->bind_param("s", $token);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
-            if (password_verify($pwd, $user["password"])) {
-                $_SESSION['username'] = $user['username'];
-                header('Location: index.php');
-                exit();
-            } else {
-                echo "Invalid password.";
-            }
-        } else {
-            echo "User not found.";
+            $_SESSION['username'] = $user['username'];
         }
     }
+}
 
     // --- LOGOUT USER ---
-    public function logoutUser()
-    {
-        if (session_status() === PHP_SESSION_NONE) session_start();
+public function logoutUser()
+{
+    if (session_status() === PHP_SESSION_NONE) session_start();
 
-        session_unset();
-        session_destroy();
-        header("Location: login.php");
-        exit();
+    // Remove rememberme cookie
+    if (isset($_COOKIE['rememberme'])) {
+        $token = $_COOKIE['rememberme'];
+        setcookie("rememberme", "", time() - 3600, "/");
+
+        // Remove token from database
+        $stmt = $this->conn->prepare("UPDATE users SET remember_token = NULL WHERE remember_token = ?");
+        $stmt->bind_param("s", $token);
+        $stmt->execute();
     }
+
+    session_unset();
+    session_destroy();
+    header("Location: login.php");
+    exit();
+}
+
 
     // --- SHOW SINGLE CYCLONE ENTRY ---
     public function showDatabase($id)
@@ -139,19 +211,32 @@ class DBFunc
     }
 
     // --- INSERT TORNADO RECORD ---
-    public function insertTornado($tor_location, $date, $fujita_rank, $wind_speed, $max_width, $distance, $duration, $file)
-    {
-        $imagePath = $this->handleImageUpload($file);
-        $stmt = $this->conn->prepare("INSERT INTO tornado_db (tor_location, date, fujita_rank, wind_speed, max_width, distance, duration, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssddss", $tor_location, $date, $fujita_rank, $wind_speed, $max_width, $distance, $duration, $imagePath);
+public function insertTornado($location, $date, $fujita_rank, $wind_speed, $max_width, $distance, $duration, $file)
+{
+    $image_path = null;
 
-        if ($stmt->execute()) {
-            return true;
-        } else {
-            echo "Insert Error: " . $stmt->error;
-            return false;
+    // Handle image upload
+    if ($file && $file['error'] === UPLOAD_ERR_OK) {
+        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $target_dir = '../uploads/tornado/';
+        if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
+        $filename = uniqid("tornado_") . '.' . $ext;
+        $target_file = $target_dir . $filename;
+
+        if (move_uploaded_file($file['tmp_name'], $target_file)) {
+            $image_path = 'uploads/tornado/' . $filename;
         }
     }
+
+    $stmt = $this->conn->prepare("
+        INSERT INTO tornado_db (tor_location, date, fujita_rank, wind_speed, max_width, distance, duration, image)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+
+    $stmt->bind_param("sssddsss", $location, $date, $fujita_rank, $wind_speed, $max_width, $distance, $duration, $image_path);
+    return $stmt->execute();
+}
+
 
     // --- UPDATE TORNADO RECORD ---
     public function updateTornado($id, $tor_location, $date, $fujita_rank, $wind_speed, $max_width, $distance, $duration, $file = null)
@@ -387,19 +472,19 @@ public function insertLifecycleEvent($data)
     return $stmt->execute();
 }
 
-// public function insertProxyStorm($data)
-// {
-//     $stmt = $this->conn->prepare("
-//         INSERT INTO Proxy_Storms (site_name, region, proxy_type, storm_date_range, estimated_intensity, notes, source_reference)
-//         VALUES (?, ?, ?, ?, ?, ?, ?)
-//     ");
-//     $stmt->bind_param("sssssss",
-//         $data['site_name'], $data['region'], $data['proxy_type'],
-//         $data['storm_date_range'], $data['estimated_intensity'],
-//         $data['notes'], $data['source_reference']
-//     );
-//     return $stmt->execute();
-// }
+public function insertProxyStorm($data)
+{
+    $stmt = $this->conn->prepare("
+        INSERT INTO Proxy_Storms (site_name, region, proxy_type, storm_date_range, estimated_intensity, notes, source_reference)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->bind_param("sssssss",
+        $data['site_name'], $data['region'], $data['proxy_type'],
+        $data['storm_date_range'], $data['estimated_intensity'],
+        $data['notes'], $data['source_reference']
+    );
+    return $stmt->execute();
+}
 
 public function calculateACEForStorm($sid)
 {
@@ -436,55 +521,54 @@ public function getStrongestStorms($limit = 10)
     return $stmt->get_result();
 }
 
-// public function insertPaleoStorm($data)
-// {
-//     $stmt = $this->conn->prepare("
-//         INSERT INTO Proxy_Storms (
-//             site, proxy_type, start_year, end_year, frequency_estimate,
-//             uncertainty_years, source, lat, lon
-//         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-//     ");
+public function insertPaleoStorm($data)
+{
+    $stmt = $this->conn->prepare("
+        INSERT INTO Proxy_Storms (
+            site, proxy_type, start_year, end_year, frequency_estimate,
+            uncertainty_years, source, lat, lon
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
 
-//     $stmt->bind_param(
-//         "ssiiidssd",
-//         $data['location_found'],
-//         $data['source_type'],
-//         $data['year'],      // start_year
-//         $data['year'],      // end_year (same as start for now)
-//         // $dummyFreq,         // use placeholder if not inputted
-//         // $dummyUncertainty,  // use placeholder if not inputted
-//         $data['description'],
-//         // $dummyLat,
-//         // $dummyLon
-//     );
+    $stmt->bind_param(
+        "ssiiidssd",
+        $data['location_found'],
+        $data['source_type'],
+        $data['year'],      // start_year
+        $data['year'],      // end_year (same as start for now)
+        // $dummyFreq,         // use placeholder if not inputted
+        // $dummyUncertainty,  // use placeholder if not inputted
+        $data['description'],
+        // $dummyLat,
+        // $dummyLon
+    );
 
-//     // Fallback dummy values (you can extend the form later)
-//     // $dummyFreq = 1.0;
-//     // $dummyUncertainty = 0;
-//     // $dummyLat = 0.0;
-//     // $dummyLon = 0.0;
+    // Fallback dummy values (you can extend the form later)
+    // $dummyFreq = 1.0;
+    // $dummyUncertainty = 0;
+    // $dummyLat = 0.0;
+    // $dummyLon = 0.0;
 
-//     $stmt->execute();
-//     $stmt->close();
-// }
+    $stmt->execute();
+    $stmt->close();
+}
 
-// public function deletePaleoStorm($id)
-// {
-//     $stmt = $this->conn->prepare("DELETE FROM Proxy_Storms WHERE id = ?");
-//     $stmt->bind_param("i", $id);
-//     $stmt->execute();
-//     $stmt->close();
-// }
+public function deletePaleoStorm($id)
+{
+    $stmt = $this->conn->prepare("DELETE FROM Proxy_Storms WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+}
 
-// public function showPaleoStorm($id)
-// {
-//     $stmt = $this->conn->prepare("SELECT * FROM Proxy_Storms WHERE id = ?");
-//     $stmt->bind_param("i", $id);
-//     $stmt->execute();
-//     $result = $stmt->get_result();
-//     $storm = $result->fetch_assoc();
-//     $stmt->close();
-//     return $storm;
-// }
-
+public function showPaleoStorm($id)
+{
+    $stmt = $this->conn->prepare("SELECT * FROM Proxy_Storms WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $storm = $result->fetch_assoc();
+    $stmt->close();
+    return $storm;
+}
 }
