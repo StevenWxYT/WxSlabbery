@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🌪️ Cyclone Dashboard</title>
+  <title>🌪️ Weather Dashboard</title>
   <link rel="stylesheet" href="master.css">
   <script>
     window.addEventListener("DOMContentLoaded", () => {
@@ -22,9 +22,13 @@
   <main>
     <h1>Steven's Weather Stash</h1>
     <div class="dashboard-buttons">
-      <div class="dashboard-card pulse" data-tooltip="Live map of tropical systems">
-        <img src="img/live_map_preview.jpg" alt="TC Database">
+      <div class="dashboard-card" data-tooltip="Recent cyclone database entries">
+        <img src="img/db_preview.jpg" alt="TC Database">
         <button onclick="location.href='tropical_cyclone/tc_index.php'">Cyclone Database</button>
+      </div>
+      <div class="dashboard-card" data-tooltip="Recent tornado database entries">
+        <img src="img/db_preview.jpg" alt="Tornado Database">
+        <button onclick="location.href='tornado/tornado_index.php'">Tornado Database</button>
       </div>
       <!-- <div class="dashboard-card pulse" data-tooltip="Live map of tropical systems">
         <img src="img/live_map_preview.jpg" alt="Live Map">

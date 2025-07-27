@@ -1,5 +1,5 @@
 <?php
-require_once '../php/db.php'; // <-- Include this BEFORE using $conn
+require_once '../php/db.php';
 require_once '../php/function.php';
 
 define('FPDF_FONTPATH', __DIR__ . '/../php/font/');
@@ -10,8 +10,8 @@ if (!isset($conn)) {
     $conn = $dbConn->getConnection();
 }
 
-
 $db = new DBFunc($conn);
+
 // PDF Export
 if (isset($_GET['export']) && $_GET['export'] === 'pdf') {
     $result = $conn->query("SELECT * FROM IBTrACS_Storms ORDER BY season DESC LIMIT 100");
@@ -63,41 +63,54 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     exit;
 }
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>IBTrACS Admin</title>
-  <link rel="stylesheet" href="../css/master.css">
+  <link rel="stylesheet" href="../master.css">
   <script src="../js/ibtracs.js" defer></script>
 </head>
 <body>
-  <h1>IBTrACS Storm Admin</h1>
+  <div class="container">
+    <h1 class="page-title">🌪️ IBTrACS Storm Admin</h1>
 
-  <form id="filterForm">
-    <input type="text" name="name" placeholder="Name">
-    <input type="text" name="year" placeholder="Year">
-    <input type="number" name="wind_min" placeholder="Min Wind">
-    <input type="number" name="wind_max" placeholder="Max Wind">
-    <input type="number" name="pressure_max" placeholder="Max Pressure">
-    <input type="text" name="sid" placeholder="SID">
-    <input type="text" name="basin" placeholder="Basin">
-    <button type="submit">Search</button>
-    <a href="?export=csv">Export CSV</a> |
-    <a href="?export=pdf">Export PDF</a>
-  </form>
+    <form id="filterForm" class="form-grid">
+      <input type="text" name="name" placeholder="Name" class="form-input">
+      <input type="text" name="year" placeholder="Year" class="form-input">
+      <input type="number" name="wind_min" placeholder="Min Wind" class="form-input">
+      <input type="number" name="wind_max" placeholder="Max Wind" class="form-input">
+      <input type="number" name="pressure_max" placeholder="Max Pressure" class="form-input">
+      <input type="text" name="sid" placeholder="SID" class="form-input">
+      <input type="text" name="basin" placeholder="Basin" class="form-input">
+      <button type="submit" class="btn btn-primary">🔍 Search</button>
+      <a href="?export=csv" class="btn btn-secondary">⬇ Export CSV</a>
+      <a href="?export=pdf" class="btn btn-secondary">⬇ Export PDF</a>
+    </form>
 
-  <div id="stormTableContainer">
-    <table id="stormTable">
-      <thead>
-        <tr>
-          <th>Name</th><th>SID</th><th>Basin</th>
-          <th>Lat</th><th>Lon</th><th>Wind (kts)</th>
-          <th>Pressure</th><th>Timestamp</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div id="pagination"></div>
+    <div id="stormTableContainer">
+      <table id="stormTable" class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>SID</th>
+            <th>Basin</th>
+            <th>Lat</th>
+            <th>Lon</th>
+            <th>Wind (kts)</th>
+            <th>Pressure</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div id="pagination" class="pagination"></div>
+    </div>
+
+    <br>
+    <a class="btn btn-secondary" href="tc_index.php">⬅ Back to TC Index</a>
   </div>
 </body>
 </html>
