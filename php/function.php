@@ -219,7 +219,19 @@ class DBFunc
         return null;
     }
 
-    
+    public function showIBTracsStorm($sid)
+{
+    $stmt = $this->conn->prepare("SELECT * FROM IBTrACS_Storms WHERE sid = ?");
+    $stmt->bind_param("s", $sid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        return $result->fetch_assoc();
+    }
+
+    return false;
+}
 
     public function insertIBTracsStorm($data)
 {
