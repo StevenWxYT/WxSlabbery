@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detailed Digital Clock</title>
+  <style>
+    /* Center content on the screen */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Bahnschrift';
+      background-color: #282c34;
+      color: #61dafb;
+      margin: 0;
+      padding: 0;
+    }
+    /* Clock container */
+    .clock-container {
+      text-align: center;
+    }
+    /* Default time and date font sizes */
+    .time {
+      font-size: 4rem;
+      margin: 0;
+    }
+    .date {
+      font-size: 1.5rem;
+      margin: 0;
+      color: #aaa;
+    }
+
+    /* Responsive styling */
+    @media (max-width: 768px) {
+      .time {
+        font-size: 3rem;
+      }
+      .date {
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .time {
+        font-size: 2rem;
+      }
+      .date {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="clock-container">
+    <p class="time" id="time"></p>
+    <p class="date" id="date"></p>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+
+      // Extract hours, minutes, and seconds
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+
+      // Determine AM/PM
+      const isAm = hours < 12;
+      const amPm = isAm ? "AM" : "PM";
+
+      // Convert to 12-hour format
+      hours = hours % 12 || 12;
+      hours = String(hours).padStart(2, '0');
+
+      // Display the time with AM/PM
+      const timeString = `${hours}:${minutes}:${seconds} ${amPm}`;
+      document.getElementById('time').textContent = timeString;
+
+      // Display the date in a readable format
+      const day = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+      const year = now.getFullYear();
+      const dateString = `Date: ${day}-${month}-${year}`;
+      document.getElementById('date').textContent = dateString;
+    }
+
+    // Update every second
+    setInterval(updateClock, 1000);
+    updateClock(); // Initial call to display immediately
+  </script>
+</body>
+</html>

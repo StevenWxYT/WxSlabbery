@@ -35,16 +35,28 @@ if (!isset($_SESSION['username'])) {
     <h1>Steven's Weather Stash</h1>
     <div class="dashboard-buttons">
       <div class="dashboard-card" data-tooltip="Recent cyclone database entries">
-        <img src="img/db_preview.jpg" alt="TC Database">
+        <img src="img/CpjJaZCscRTABwKe72SZQh.jpg" alt="TC Database">
         <button onclick="location.href='tropical_cyclone/tc_admin.php'">Cyclone Database</button>
       </div>
       <div class="dashboard-card" data-tooltip="Recent cyclone database entries">
-        <img src="img/db_preview.jpg" alt="TC Database">
+        <img src="img/ojo-del-huracan-irma-1024x576.jpg" alt="TC Database">
         <button onclick="location.href='tropical_cyclone/ibtracs_admin.php'">IBTrACS Records</button>
       </div>
       <div class="dashboard-card" data-tooltip="Recent tornado database entries">
-        <img src="img/db_preview.jpg" alt="Tornado Database">
+        <img src="img/El_Reno,_OK_EF3_Tornado_2013-05-31.jpg" alt="Tornado Database">
         <button onclick="location.href='tornado/tornado_admin.php'">Tornado Database</button>
+      </div>
+      <div class="dashboard-card" data-tooltip="Recent tornado database entries">
+        <img src="img/F13IconBlurry.png" alt="Tornado Database">
+        <button onclick="location.href='KnackWx/index.html'">TC Tracker</button>
+      </div>
+      <div class="dashboard-card" data-tooltip="Recent cyclone database entries">
+        <img src="img/reed-timmer-when-there-is-a-tornado-near-him-v0-bv7lg3udyscb1.png" alt="TC Database">
+        <button onclick="location.href='tc_calc/index.html'">TC Calculator</button>
+      </div>
+      <div class="dashboard-card" data-tooltip="Recent tornado database entries">
+        <img src="img/ReedTeamDomHQ.png" alt="Tornado Database">
+        <button onclick="location.href='clock/clock.html'">Real Time Clock</button>
       </div>
       <!-- <div class="dashboard-card pulse" data-tooltip="Live map of tropical systems">
         <img src="img/live_map_preview.jpg" alt="Live Map">

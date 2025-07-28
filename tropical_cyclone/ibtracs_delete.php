@@ -2,26 +2,28 @@
 require_once '../php/db.php';
 require_once '../php/function.php';
 
-// Initialize database connection
+// Initialize DB connection
 $dbConn = new DBConn();
 $conn = $dbConn->getConnection();
 $db = new DBFunc($conn);
 
-// Validate the ID parameter
-if (!isset($_GET['id']) || empty($_GET['id'])) {
-    echo "Error: Storm ID not provided.";
+// Validate storm ID
+if (!isset($_GET['id']) || trim($_GET['id']) === '') {
+    header("Location: ibtracs_admin.php?error=missing_id");
     exit();
 }
 
-// Perform the delete operation
-$deleted = $db->deleteIBTracsStorm($_GET['id']);
+$id = htmlspecialchars(trim($_GET['id']));
 
-// Redirect or show error if deletion fails
+// Perform deletion
+$deleted = $db->deleteIBTracsStorm($id);
+
+// Redirect on result
 if ($deleted) {
-    header("Location: ibtracs_admin.php?status=deleted");
+    header("Location: ibtracs_admin.php?status=deleted&sid=" . urlencode($id));
     exit();
 } else {
-    echo "Error: Failed to delete IBTrACS storm.";
+    header("Location: ibtracs_admin.php?error=delete_failed&sid=" . urlencode($id));
     exit();
 }
 ?>

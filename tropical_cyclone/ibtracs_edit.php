@@ -11,6 +11,7 @@ if (!isset($_GET['id'])) {
 
 $id = $_GET['id'];
 $data = $db->showIBTracsStorm($id);
+
 if (!$data) {
     echo "❌ Storm not found.";
     exit();
@@ -20,6 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db->updateIBTracsStorm($id, $_POST);
     header("Location: ibtracs_admin.php?updated=1");
     exit();
+}
+
+// Format timestamp for datetime-local input
+function formatForDatetimeLocal($datetime) {
+    return $datetime ? date('Y-m-d\TH:i', strtotime($datetime)) : '';
 }
 ?>
 
@@ -35,21 +41,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h1 class="title">✏️ Edit IBTrACS Storm</h1>
 
     <form method="POST" class="form-grid">
-        <input name="sid" value="<?= htmlspecialchars($data['sid']) ?>" placeholder="SID" required>
-        <input name="name" value="<?= htmlspecialchars($data['name']) ?>" placeholder="Name">
-        <input name="basin" value="<?= htmlspecialchars($data['basin']) ?>" placeholder="Basin">
-        <input name="agency" value="<?= htmlspecialchars($data['agency']) ?>" placeholder="Agency">
-        <input name="lat" value="<?= htmlspecialchars($data['lat']) ?>" placeholder="Latitude">
-        <input name="lon" value="<?= htmlspecialchars($data['lon']) ?>" placeholder="Longitude">
-        <input name="wind_kts" type="number" value="<?= htmlspecialchars($data['wind_kts']) ?>" placeholder="Wind (kts)">
-        <input name="pressure_mb" type="number" value="<?= htmlspecialchars($data['pressure_mb']) ?>" placeholder="Pressure (mb)">
-        <input name="timestamp" value="<?= htmlspecialchars($data['timestamp']) ?>" placeholder="Timestamp (YYYY-MM-DD HH:MM:SS)">
-        <input name="storm_type" value="<?= htmlspecialchars($data['storm_type']) ?>" placeholder="Storm Type">
-        <input name="nature" value="<?= htmlspecialchars($data['nature']) ?>" placeholder="Nature">
-        <input name="track_type" value="<?= htmlspecialchars($data['track_type']) ?>" placeholder="Track Type">
-        <input name="track_points" type="number" value="<?= htmlspecialchars($data['track_points']) ?>" placeholder="Track Points">
-        <label>Start Date: <input name="start_date" type="date" value="<?= htmlspecialchars($data['start_date']) ?>"></label>
-        <label>End Date: <input name="end_date" type="date" value="<?= htmlspecialchars($data['end_date']) ?>"></label>
+
+        <label class="form-label">SID:
+            <input type="text" name="sid" class="form-control" value="<?= htmlspecialchars($data['sid']) ?>" required>
+        </label>
+
+        <label class="form-label">Name:
+            <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($data['name']) ?>">
+        </label>
+
+        <label class="form-label">Basin:
+            <input type="text" name="basin" class="form-control" value="<?= htmlspecialchars($data['basin']) ?>">
+        </label>
+
+        <label class="form-label">Agency:
+            <input type="text" name="agency" class="form-control" value="<?= htmlspecialchars($data['agency']) ?>">
+        </label>
+
+        <label class="form-label">Latitude:
+            <input type="number" name="lat" step="0.01" class="form-control" value="<?= htmlspecialchars($data['lat']) ?>">
+        </label>
+
+        <label class="form-label">Longitude:
+            <input type="number" name="lon" step="0.01" class="form-control" value="<?= htmlspecialchars($data['lon']) ?>">
+        </label>
+
+        <label class="form-label">Wind (kts):
+            <input type="number" name="wind_kts" class="form-control" value="<?= htmlspecialchars($data['wind_kts']) ?>">
+        </label>
+
+        <label class="form-label">Pressure (mb):
+            <input type="number" name="pressure_mb" class="form-control" value="<?= htmlspecialchars($data['pressure_mb']) ?>">
+        </label>
+
+        <label class="form-label">Timestamp:
+            <input type="datetime-local" name="timestamp" class="form-control" value="<?= formatForDatetimeLocal($data['timestamp']) ?>">
+        </label>
+
+        <label class="form-label">Storm Type:
+            <input type="text" name="storm_type" class="form-control" value="<?= htmlspecialchars($data['storm_type']) ?>">
+        </label>
+
+        <label class="form-label">Nature:
+            <input type="text" name="nature" class="form-control" value="<?= htmlspecialchars($data['nature']) ?>">
+        </label>
+
+        <label class="form-label">Track Type:
+            <input type="text" name="track_type" class="form-control" value="<?= htmlspecialchars($data['track_type']) ?>">
+        </label>
+
+        <label class="form-label">Track Points:
+            <input type="number" name="track_points" class="form-control" value="<?= htmlspecialchars($data['track_points']) ?>">
+        </label>
+
+        <label class="form-label">Start Date:
+            <input type="date" name="start_date" class="form-control" value="<?= htmlspecialchars($data['start_date']) ?>">
+        </label>
+
+        <label class="form-label">End Date:
+            <input type="date" name="end_date" class="form-control" value="<?= htmlspecialchars($data['end_date']) ?>">
+        </label>
 
         <div class="button-group">
             <button type="submit" class="btn">💾 Update Storm</button>

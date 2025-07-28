@@ -14,24 +14,24 @@ if (!class_exists('TCPDF')) {
  * @noinspection PhpUndefinedMethodInspection
  */
 
-class WxPDF extends TCPDF {
+// class WxPDF extends TCPDF {
 
-    // Page header
-    public function Header() {
-        $this->SetFont('helvetica', 'B', 14);
-        $this->Cell(0, 10, '🌪️ WxSlabbery Tropical Cyclone Report', 0, 1, 'C');
-        $this->SetFont('helvetica', '', 10);
-        $this->Cell(0, 5, 'Generated on ' . date('Y-m-d'), 0, 1, 'C');
-        $this->Ln(4);
-    }
+//     // Page header
+//     public function Header() {
+//         $this->SetFont('helvetica', 'B', 14);
+//         $this->Cell(0, 10, '🌪️ WxSlabbery Tropical Cyclone Report', 0, 1, 'C');
+//         $this->SetFont('helvetica', '', 10);
+//         $this->Cell(0, 5, 'Generated on ' . date('Y-m-d'), 0, 1, 'C');
+//         $this->Ln(4);
+//     }
 
-    // Page footer
-    public function Footer() {
-        $this->SetY(-15);
-        $this->SetFont('helvetica', 'I', 8);
-        $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, 0, 'C');
-    }
-}
+//     // Page footer
+//     public function Footer() {
+//         $this->SetY(-15);
+//         $this->SetFont('helvetica', 'I', 8);
+//         $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, 0, 'C');
+//     }
+// }
 class DBFunc
 {
     public function __construct($db)

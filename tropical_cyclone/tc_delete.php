@@ -2,26 +2,37 @@
 require_once '../php/db.php';
 require_once '../php/function.php';
 
-// Initialize database connection
 $dbConn = new DBConn();
 $conn = $dbConn->getConnection();
 $functions = new DBFunc($conn);
 
-// Check for valid cyclone ID
-if (!isset($_GET['id']) || empty($_GET['id'])) {
-    echo "Error: Cyclone ID not provided.";
+// Get ID and confirm flag
+$id = $_GET['id'] ?? null;
+$confirm = $_GET['confirm'] ?? null;
+
+// Basic validation
+if (!$id) {
+    echo "<h2>Error: Cyclone ID not provided.</h2>";
     exit();
 }
 
-// Delete cyclone by ID
-$deleted = $functions->deleteDatabase($_GET['id']);
+// Optional: confirm before deletion
+if ($confirm !== 'yes') {
+    echo "<h2>Are you sure you want to delete this cyclone?</h2>";
+    echo "<a href=\"tc_delete.php?id=" . urlencode($id) . "&confirm=yes\" style='color:red; font-weight:bold;'>Yes, delete it</a> | ";
+    echo "<a href=\"tc_admin.php\">Cancel</a>";
+    exit();
+}
 
-// Redirect or show error if deletion fails
+// Proceed with deletion
+$deleted = $functions->deleteDatabase($id);
+
 if ($deleted) {
     header("Location: tc_admin.php?status=deleted");
     exit();
 } else {
-    echo "Error: Failed to delete cyclone.";
+    echo "<h2>Error: Failed to delete cyclone.</h2>";
+    echo "<a href='tc_admin.php'>⬅ Back</a>";
     exit();
 }
 ?>

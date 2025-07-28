@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cyclone Tracker</title>
+  <style>
+    body {
+      font-family: 'Bahnschrift';
+      padding: 20px;
+      background-color: #022341;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    h1 {
+      color: #dadada;
+      text-align: center;
+    }
+
+    .cyclone-info {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      background-color: #5eaddb;
+    }
+
+    button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #0779c5;
+      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 15px; }
+      h1 { font-size: 1.5em; }
+      .cyclone-info { padding: 12px; margin-left: 12px; }
+      button { font-size: 0.9em; padding: 8px 16px; }
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 1.2em; }
+      .cyclone-info { font-size: 0.9em; padding: 10px; }
+      button { font-size: 0.8em; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Cyclone Tracker</h1>
+  <button onclick="fetchCycloneData()">Load Cyclone Data</button>
+  <div id="cyclone-data"></div>
+
+  <script src="cyclone_tracker.js"></script>
+</body>
+</body>
+</html>

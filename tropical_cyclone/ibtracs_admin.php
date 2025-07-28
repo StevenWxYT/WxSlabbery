@@ -76,6 +76,14 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
   <div class="container">
     <h1 class="page-title">🌪️ IBTrACS Storm Admin</h1>
 
+    <!-- Button Group -->
+    <div class="admin-buttons">
+      <a class="btn" href="tc_index.php">⬅ Back to TC Index</a>
+      <a class="btn" href="?export=csv" target="_blank">📁 Export CSV</a>
+      <a class="btn" href="?export=pdf" target="_blank">📄 Export PDF</a>
+    </div>
+
+    <!-- Filter Form -->
     <form id="filterForm" class="form-grid">
       <input type="text" name="name" placeholder="Name" class="form-input">
       <input type="text" name="year" placeholder="Year" class="form-input">
@@ -85,10 +93,9 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
       <input type="text" name="sid" placeholder="SID" class="form-input">
       <input type="text" name="basin" placeholder="Basin" class="form-input">
       <button type="submit" class="btn btn-primary">🔍 Search</button>
-      <a href="?export=csv" class="btn btn-secondary">⬇ Export CSV</a>
-      <a href="?export=pdf" class="btn btn-secondary">⬇ Export PDF</a>
     </form>
 
+    <!-- Table and Pagination -->
     <div id="stormTableContainer">
       <table id="stormTable" class="table">
         <thead>
@@ -105,12 +112,8 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
         </thead>
         <tbody></tbody>
       </table>
-
       <div id="pagination" class="pagination"></div>
     </div>
-
-    <br>
-    <a class="btn btn-secondary" href="tc_index.php">⬅ Back to TC Index</a>
   </div>
 </body>
 </html>

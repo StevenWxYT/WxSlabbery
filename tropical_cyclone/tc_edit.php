@@ -20,9 +20,11 @@ if (!$data) {
     exit();
 }
 
+$updateSuccess = null;
+
 // Handle update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $functions->updateDatabase(
+    $updateSuccess = $functions->updateDatabase(
         $_POST['storm_id'], $_POST['name'], $_POST['basin'],
         $_POST['wind_speed'], $_POST['pressure'],
         $_POST['start_date'], $_POST['end_date'],
@@ -30,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_GET['id'], $_FILES['image']
     );
 
-    // Optional: reload updated data
+    // Refresh form with updated data
     $data = $functions->showDatabase($_GET['id']);
 }
 ?>
@@ -47,23 +49,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="form-container">
     <h1>🛠️ Edit Cyclone: <?= htmlspecialchars($data['name']) ?></h1>
 
+    <?php if ($updateSuccess !== null): ?>
+        <div class="status-message <?= $updateSuccess ? 'success' : 'error' ?>">
+            <?= $updateSuccess ? '✅ Cyclone updated successfully!' : '❌ Update failed. Please try again.' ?>
+        </div>
+    <?php endif; ?>
+
     <form method="POST" enctype="multipart/form-data">
-        <input name="storm_id" value="<?= htmlspecialchars($data['storm_id']) ?>" required>
-        <input name="name" value="<?= htmlspecialchars($data['name']) ?>" required>
-        <input name="basin" value="<?= htmlspecialchars($data['basin']) ?>" required>
-        <input name="wind_speed" type="number" value="<?= htmlspecialchars($data['wind_speed']) ?>" required>
-        <input name="pressure" type="number" value="<?= htmlspecialchars($data['pressure']) ?>" required>
+        <input name="storm_id" type="text" value="<?= htmlspecialchars($data['storm_id']) ?>" placeholder="Storm ID" required>
+        <input name="name" type="text" value="<?= htmlspecialchars($data['name']) ?>" placeholder="Name" required>
+        <input name="basin" type="text" value="<?= htmlspecialchars($data['basin']) ?>" placeholder="Basin" required>
+        <input name="wind_speed" type="number" value="<?= htmlspecialchars($data['wind_speed']) ?>" placeholder="Wind Speed (kt)" required>
+        <input name="pressure" type="number" value="<?= htmlspecialchars($data['pressure']) ?>" placeholder="Pressure (mb)" required>
         <input name="start_date" type="date" value="<?= htmlspecialchars($data['start_date']) ?>" required>
         <input name="end_date" type="date" value="<?= htmlspecialchars($data['end_date']) ?>" required>
-        <input name="fatalities" type="number" value="<?= htmlspecialchars($data['fatalities']) ?>" required>
-        <input name="damages" value="<?= htmlspecialchars($data['damages']) ?>" required>
-        <input name="ace" type="number" step="0.01" value="<?= htmlspecialchars($data['ace']) ?>" required>
+        <input name="fatalities" type="number" value="<?= htmlspecialchars($data['fatalities']) ?>" placeholder="Fatalities" required>
+        <input name="damages" type="text" value="<?= htmlspecialchars($data['damages']) ?>" placeholder="Damages (USD or qualitative)" required>
+        <input name="ace" type="number" step="0.01" value="<?= htmlspecialchars($data['ace']) ?>" placeholder="ACE" required>
+
+        <?php if (!empty($data['image_path'])): ?>
+            <div class="current-image">
+                <strong>Current Image:</strong><br>
+                <img src="<?= htmlspecialchars($data['image_path']) ?>" alt="Cyclone Image" style="max-width:100%; max-height:200px; margin:10px 0;">
+            </div>
+        <?php endif; ?>
+
         <label>Replace Image (optional):</label>
         <input type="file" name="image">
-        <button type="submit">✅ Update Cyclone</button>
-    </form>
 
-    <a class="back-link" href="tc_admin.php">⬅ Back to Cyclone Admin</a>
+        <button type="submit" class="primary-btn">✅ Update Cyclone</button>
+        <a class="secondary-btn" href="tc_admin.php">⬅ Back to Cyclone Admin</a>
+    </form>
 </div>
 
 </body>

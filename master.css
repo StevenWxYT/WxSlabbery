@@ -530,3 +530,17 @@ button[name="delete"]:hover {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
