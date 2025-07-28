@@ -1,37 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Tropical Cyclone Calculator</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Tropical Cyclone Calculator</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <div class="container">
     <h1>Tropical Cyclone Weather Calculator</h1>
-    <form id="cycloneForm">
-      <label for="wind">Max Sustained Wind (knots):</label>
-      <input type="number" id="wind" name="wind" required>
 
-      <label for="pressure">Central Pressure (mb):</label>
-      <input type="number" id="pressure" name="pressure" required>
+    <!-- Back Button -->
+    <button onclick="window.history.back()" class="back-button">← Back</button>
 
-      <label for="sst">Sea Surface Temperature (°C):</label>
-      <input type="number" id="sst" name="sst" value="28">
+    <form id="cycloneCalcForm" method="post" action="calculate.php">
+      <label for="calcType">Select Calculation Type:</label>
+      <select id="calcType" name="calcType">
+        <option value="">-- Select --</option>
+        <option value="sshs">Saffir–Simpson Hurricane Scale</option>
+        <option value="holland">Holland Pressure Model</option>
+        <option value="ckz">CKZ Wind-Pressure Relationship</option>
+        <option value="rmw">Radius of Maximum Wind</option>
+        <option value="surge">Storm Surge Estimate</option>
+        <option value="pdeficit">Pressure Deficit</option>
+        <option value="chp">Cyclone Heat Potential</option>
+        <option value="ace">Accumulated Cyclone Energy</option>
+      </select>
 
-      <label for="lat">Latitude (°):</label>
-      <input type="number" id="lat" name="lat" value="15">
+      <!-- Formula display -->
+      <div id="formulaBox" class="formula-display"></div>
 
-      <label for="duration">Storm Duration (hours, for ACE):</label>
-      <input type="number" id="duration" name="duration" value="24" min="6" step="6">
+      <!-- Dynamic input fields -->
+      <div id="dynamicFields"></div>
+
+      <!-- Scientific calculator interface -->
+      <div class="calculator">
+        <input type="text" id="calcDisplay" readonly>
+        <div class="buttons">
+          <!-- First Row -->
+          <button class="memory" data-action="mc">MC</button>
+          <button class="memory" data-action="mr">MR</button>
+          <button class="memory" data-action="mplus">M+</button>
+          <button class="memory" data-action="mminus">M−</button>
+
+          <!-- Second Row -->
+          <button data-value="(">(</button>
+          <button data-value=")">)</button>
+          <button data-value="%">%</button>
+          <button class="operator" data-value="/">÷</button>
+
+          <!-- Third Row -->
+          <button data-value="7">7</button>
+          <button data-value="8">8</button>
+          <button data-value="9">9</button>
+          <button class="operator" data-value="*">×</button>
+
+          <!-- Fourth Row -->
+          <button data-value="4">4</button>
+          <button data-value="5">5</button>
+          <button data-value="6">6</button>
+          <button class="operator" data-value="-">−</button>
+
+          <!-- Fifth Row -->
+          <button data-value="1">1</button>
+          <button data-value="2">2</button>
+          <button data-value="3">3</button>
+          <button class="operator" data-value="+">+</button>
+
+          <!-- Sixth Row -->
+          <button data-value="0">0</button>
+          <button data-value=".">.</button>
+          <button class="equals" id="equals">=</button>
+          <button class="clear" id="clear">C</button>
+        </div>
+
+      </div>
 
       <button type="submit">Calculate</button>
-      <a href="../index.php" class="back-button">← Back to Dashboard</a>
-
     </form>
 
+    <!-- Output & history -->
     <div id="result"></div>
+    <h3>Calculation History</h3>
+    <div id="historyLog"></div>
   </div>
 
   <script src="script.js"></script>
 </body>
+
 </html>

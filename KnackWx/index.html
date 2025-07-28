@@ -6,9 +6,10 @@
   <title>Cyclone Tracker</title>
   <style>
     body {
-      font-family: 'Bahnschrift';
+      font-family: 'Bahnschrift', sans-serif;
       padding: 20px;
       background-color: #022341;
+      color: #fff;
       max-width: 1200px;
       margin: auto;
     }
@@ -18,17 +19,9 @@
       text-align: center;
     }
 
-    .cyclone-info {
-      border: 1px solid #ccc;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 5px;
-      background-color: #5eaddb;
-    }
-
     button {
-      display: block;
-      margin: 10px auto;
+      display: inline-block;
+      margin: 10px 5px;
       padding: 10px 20px;
       font-size: 1em;
       cursor: pointer;
@@ -36,28 +29,39 @@
       border-radius: 5px;
       background-color: #0779c5;
       color: #fff;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #055e96;
+    }
+
+    .button-container {
+      text-align: center;
+      margin: 20px 0;
     }
 
     @media (max-width: 768px) {
-      body { padding: 15px; }
       h1 { font-size: 1.5em; }
-      .cyclone-info { padding: 12px; margin-left: 12px; }
       button { font-size: 0.9em; padding: 8px 16px; }
     }
 
     @media (max-width: 480px) {
       h1 { font-size: 1.2em; }
-      .cyclone-info { font-size: 0.9em; padding: 10px; }
       button { font-size: 0.8em; padding: 6px 12px; }
     }
   </style>
 </head>
 <body>
   <h1>Cyclone Tracker</h1>
-  <button onclick="fetchCycloneData()">Load Cyclone Data</button>
+
+  <div class="button-container">
+    <button onclick="window.history.back()">← Back</button>
+    <button onclick="fetchCycloneData()">Load Cyclone Data</button>
+  </div>
+
   <div id="cyclone-data"></div>
 
   <script src="cyclone_tracker.js"></script>
-</body>
 </body>
 </html>

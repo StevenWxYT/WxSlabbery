@@ -1,59 +1,144 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: #eef2f7;
-  margin: 0;
-  padding: 20px;
-}
-.container {
-  max-width: 550px;
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
-  margin: auto;
-}
-h1 {
-  text-align: center;
-  color: #2a4b7c;
-}
-label {
-  display: block;
-  margin-top: 15px;
-  font-weight: 600;
-}
-input {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
+/* General Reset and Base Styles */
+* {
   box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-button {
-  margin-top: 20px;
-  width: 100%;
-  padding: 12px;
-  background: #0078D4;
-  color: white;
-  border: none;
-  font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-button:hover {
-  background: #005ea6;
-}
-#result {
-  margin-top: 25px;
-  background: #f4f8fb;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #d0e3f0;
-}
-ul {
-  list-style: none;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
   padding: 0;
 }
-ul li {
-  margin-bottom: 10px;
+
+body {
+  background: #1e1e2f;
+  color: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+}
+
+/* Calculator Container */
+.calculator {
+  background: #2b2b3c;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  width: 350px;
+  padding: 20px;
+  margin-bottom: 40px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #7ed6df;
+}
+
+/* Calculator Display */
+#calcDisplay {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.5em;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  background: #191927;
+  color: #fff;
+}
+
+/* Buttons Grid */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+button {
+  padding: 15px;
+  font-size: 1.1em;
+  background: #3a3a4f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #57577a;
+}
+
+button.operator {
+  background: #ff9f43;
+}
+
+button.equals {
+  background: #38ada9;
+}
+
+button.memory {
+  background: #546de5;
+}
+
+button.clear {
+  background: #eb4d4b;
+}
+
+/* Formula and Dynamic Fields */
+#formulaBox {
+  background: #1d1d2b;
+  border-left: 5px solid #7ed6df;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 0.95em;
+  min-height: 40px;
+}
+
+#dynamicFields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#dynamicFields label {
+  font-size: 0.9em;
+  color: #aaa;
+}
+
+#dynamicFields input {
+  padding: 8px;
+  font-size: 1em;
+  border: none;
+  border-radius: 6px;
+  background: #2e2e40;
+  color: #fff;
+}
+
+/* Select Dropdown */
+select#calcType {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  background: #2e2e40;
+  color: #fff;
+  border: none;
+  font-size: 1em;
+}
+
+/* History Log */
+#historyLog {
+  background: #12121a;
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  width: 100%;
+  font-size: 0.9em;
+}
+
+#historyLog p {
+  margin: 5px 0;
+  color: #a0aec0;
+  border-bottom: 1px dashed #444;
+  padding-bottom: 4px;
 }
