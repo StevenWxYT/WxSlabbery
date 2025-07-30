@@ -48,20 +48,20 @@ if (!isset($_SESSION['username'])) {
         <img src="img/ojo-del-huracan-irma-1024x576.jpg" alt="TC Database">
         <button onclick="location.href='tropical_cyclone/templates/ibtracs.html'">IBTrACS Records</button>
       </div> -->
-      <div class="dashboard-card" data-tooltip="Recent tornado database entries">
+      <!-- <div class="dashboard-card" data-tooltip="Recent tornado database entries">
         <img src="img/El_Reno,_OK_EF3_Tornado_2013-05-31.jpg" alt="Tornado Database">
         <button onclick="location.href='tornado/tornado_admin.php'">Tornado Database</button>
-      </div>
+      </div> -->
       <div class="dashboard-card" data-tooltip="Recent tornado database entries">
-        <img src="img/F13IconBlurry.png" alt="Tornado Database">
+        <img src="img/ojo-del-huracan-irma-1024x576.jpg" alt="Tornado Database">
         <button onclick="location.href='KnackWx/index.html'">TC Tracker</button>
       </div>
-      <div class="dashboard-card" data-tooltip="Recent cyclone database entries">
+      <!-- <div class="dashboard-card" data-tooltip="Recent cyclone database entries">
         <img src="img/reed-timmer-when-there-is-a-tornado-near-him-v0-bv7lg3udyscb1.png" alt="TC Database">
         <button onclick="location.href='tc_calc/index.html'">TC Calculator</button>
-      </div>
+      </div> -->
       <div class="dashboard-card" data-tooltip="Recent tornado database entries">
-        <img src="img/ReedTeamDomHQ.png" alt="Tornado Database">
+        <img src="img/F13IconBlurry.png" alt="Tornado Database">
         <button onclick="location.href='clock/clock.html'">Real Time Clock</button>
       </div>
       <!-- <div class="dashboard-card pulse" data-tooltip="Live map of tropical systems">
@@ -201,7 +201,8 @@ if (!isset($_SESSION['username'])) {
       <button onclick="window.location.href='tropical_cyclone/tc_admin.php'">Manage Cyclones</button>
       <button class="logout-btn" onclick="window.location.href='logout.php'">Logout</button>
       <br>
-      <p>Created by <a href="https://wx24yt.wixsite.com/fr24/tropical-update-1" target="_blank" rel="noopener noreferrer">StevenWxYT</a></p>
+      <p>This is only for personal project purposes.</p>
+      <p>All offical datsets, forecasts and trackers can be found <a href="https://wx24yt.wixsite.com/fr24/tropical-update-1" target="_blank" rel="noopener noreferrer">in these listed websites</a></p>
       <!-- <button onclick="window.location.href='https://wx24yt.wixsite.com/fr24/tropical-update-1'" type="button">
         Main Website
       </button> -->

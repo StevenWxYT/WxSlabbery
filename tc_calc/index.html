@@ -13,11 +13,11 @@
     <h1>Tropical Cyclone Weather Calculator</h1>
 
     <!-- Back Button -->
-    <button onclick="window.history.back()" class="back-button">← Back</button>
+    <button onclick="window.history.back()" class="back-button" type="button">← Back</button>
 
     <form id="cycloneCalcForm" method="post" action="calculate.php">
       <label for="calcType">Select Calculation Type:</label>
-      <select id="calcType" name="calcType">
+      <select id="calcType" name="calcType" required>
         <option value="">-- Select --</option>
         <option value="sshs">Saffir–Simpson Hurricane Scale</option>
         <option value="holland">Holland Pressure Model</option>
@@ -37,48 +37,44 @@
 
       <!-- Scientific calculator interface -->
       <div class="calculator">
-        <input type="text" id="calcDisplay" readonly>
+        <input type="text" id="calcDisplay" readonly />
         <div class="buttons">
-          <!-- First Row -->
-          <button class="memory" data-action="mc">MC</button>
-          <button class="memory" data-action="mr">MR</button>
-          <button class="memory" data-action="mplus">M+</button>
-          <button class="memory" data-action="mminus">M−</button>
+          <!-- Memory Row -->
+          <button type="button" class="memory" data-action="mc">MC</button>
+          <button type="button" class="memory" data-action="mr">MR</button>
+          <button type="button" class="memory" data-action="mplus">M+</button>
+          <button type="button" class="memory" data-action="mminus">M−</button>
 
-          <!-- Second Row -->
-          <button data-value="(">(</button>
-          <button data-value=")">)</button>
-          <button data-value="%">%</button>
-          <button class="operator" data-value="/">÷</button>
+          <!-- Operator Row -->
+          <button type="button" data-value="(">(</button>
+          <button type="button" data-value=")">)</button>
+          <button type="button" data-value="%">%</button>
+          <button type="button" class="operator" data-value="/">÷</button>
 
-          <!-- Third Row -->
-          <button data-value="7">7</button>
-          <button data-value="8">8</button>
-          <button data-value="9">9</button>
-          <button class="operator" data-value="*">×</button>
+          <!-- Numbers and Operators -->
+          <button type="button" data-value="7">7</button>
+          <button type="button" data-value="8">8</button>
+          <button type="button" data-value="9">9</button>
+          <button type="button" class="operator" data-value="*">×</button>
 
-          <!-- Fourth Row -->
-          <button data-value="4">4</button>
-          <button data-value="5">5</button>
-          <button data-value="6">6</button>
-          <button class="operator" data-value="-">−</button>
+          <button type="button" data-value="4">4</button>
+          <button type="button" data-value="5">5</button>
+          <button type="button" data-value="6">6</button>
+          <button type="button" class="operator" data-value="-">−</button>
 
-          <!-- Fifth Row -->
-          <button data-value="1">1</button>
-          <button data-value="2">2</button>
-          <button data-value="3">3</button>
-          <button class="operator" data-value="+">+</button>
+          <button type="button" data-value="1">1</button>
+          <button type="button" data-value="2">2</button>
+          <button type="button" data-value="3">3</button>
+          <button type="button" class="operator" data-value="+">+</button>
 
-          <!-- Sixth Row -->
-          <button data-value="0">0</button>
-          <button data-value=".">.</button>
-          <button class="equals" id="equals">=</button>
-          <button class="clear" id="clear">C</button>
+          <button type="button" data-value="0">0</button>
+          <button type="button" data-value=".">.</button>
+          <button type="button" class="equals" id="equals">=</button>
+          <button type="button" class="clear" id="clear">C</button>
         </div>
-
       </div>
 
-      <button type="submit">Calculate</button>
+      <button type="submit" class="submit-button">Calculate</button>
     </form>
 
     <!-- Output & history -->
