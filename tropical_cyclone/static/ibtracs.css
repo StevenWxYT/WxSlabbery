@@ -1,0 +1,122 @@
+body {
+  font-family: 'Bahnschrift', sans-serif;
+  background: #022341;
+  color: white;
+  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.filters {
+  text-align: center;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.filters input {
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+  min-width: 120px;
+}
+
+.filters button {
+  padding: 8px 16px;
+  background: #0779c5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.filters button:hover {
+  background: #055d94;
+}
+
+#loading {
+  text-align: center;
+  margin: 20px 0;
+  display: none;
+  font-weight: bold;
+}
+
+#loading-bar-container {
+  width: 100%;
+  background: #ccc;
+  border-radius: 10px;
+  height: 20px;
+  margin: 10px auto;
+  overflow: hidden;
+  max-width: 600px;
+  display: none;
+}
+
+#loading-bar {
+  height: 100%;
+  width: 0%;
+  background: #44d7b6;
+  transition: width 0.4s ease;
+}
+
+.cyclone-info {
+  background: #5eaddb;
+  color: black;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 5px;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#pagination {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#pagination button {
+  margin: 0 3px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  background: #0669a4;
+  color: white;
+  transition: background 0.3s ease;
+}
+#pagination button:hover {
+  background: #03446f;
+}
+#pagination button.active {
+  background: #ffffff;
+  color: #0669a4;
+  font-weight: bold;
+}
+
+#progress-container {
+  width: 100%;
+  background-color: #1b3a56;
+  border-radius: 10px;
+  margin: 15px auto;
+  height: 20px;
+  display: none;
+  overflow: hidden;
+}
+
+#progress-bar {
+  height: 100%;
+  width: 0%;
+  background-color: #00d4ff;
+  transition: width 0.3s ease-in-out;
+}

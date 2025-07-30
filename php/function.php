@@ -458,6 +458,18 @@ public function getStormsByBasin($basinCode)
     return $stmt->get_result();
 }
 
+public function getIBTracsByYearRange($startYear, $endYear)
+{
+    $stmt = $this->conn->prepare("
+        SELECT * FROM IBTrACS_Storms 
+        WHERE season_year BETWEEN ? AND ?
+        ORDER BY season_year ASC, timestamp ASC
+    ");
+    $stmt->bind_param("ii", $startYear, $endYear);
+    $stmt->execute();
+    return $stmt->get_result();
+}
+
 public function insertLifecycleEvent($data)
 {
     $stmt = $this->conn->prepare("

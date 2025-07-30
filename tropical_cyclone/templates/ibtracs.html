@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>IBTrACS Cyclone Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='ibtracs.css') }}">
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+
+        #loading,
+        #progress-container {
+            margin-top: 15px;
+            display: none;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 16px;
+            background-color: #4caf50;
+            border-radius: 5px;
+        }
+
+        #progress-container {
+            width: 100%;
+            background-color: #ddd;
+            height: 16px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .filters,
+        .controls {
+            margin-bottom: 15px;
+        }
+
+        input,
+        select,
+        button {
+            padding: 6px;
+            margin-right: 5px;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #ccc;
+            padding: 6px;
+            text-align: left;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pagination button {
+            padding: 6px 10px;
+            margin: 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>IBTrACS Cyclone Viewer</h1>
+
+    <div class="filters">
+        <input type="text" id="filter-name" placeholder="Name">
+        <input type="text" id="filter-year" placeholder="Year">
+        <input type="text" id="filter-basin" placeholder="Basin">
+        <input type="text" id="filter-sid" placeholder="SID">
+        <button onclick="fetchIBTracs(true)">Search</button>
+    </div>
+
+    <div class="controls">
+        <label for="row-limit">Rows per page:</label>
+        <select id="row-limit" onchange="fetchIBTracs(true)">
+            <option value="10">10</option>
+            <option value="25" selected>25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
+
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+    <div id="loading">Loading data...</div>
+
+
+
+    <div id="cyclone-data"></div>
+    <div class="pagination" id="pagination"></div>
+
+    <script src="{{ url_for('static', filename='ibtracs.js') }}"></script>
+</body>
+
+</html>

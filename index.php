@@ -44,10 +44,10 @@ if (!isset($_SESSION['username'])) {
         <img src="img/CpjJaZCscRTABwKe72SZQh.jpg" alt="TC Database">
         <button onclick="location.href='tropical_cyclone/tc_admin.php'">Cyclone Database</button>
       </div>
-      <div class="dashboard-card" data-tooltip="Recent cyclone database entries">
+      <!-- <div class="dashboard-card" data-tooltip="Recent cyclone database entries">
         <img src="img/ojo-del-huracan-irma-1024x576.jpg" alt="TC Database">
-        <button onclick="location.href='tropical_cyclone/ibtracs_admin.php'">IBTrACS Records</button>
-      </div>
+        <button onclick="location.href='tropical_cyclone/templates/ibtracs.html'">IBTrACS Records</button>
+      </div> -->
       <div class="dashboard-card" data-tooltip="Recent tornado database entries">
         <img src="img/El_Reno,_OK_EF3_Tornado_2013-05-31.jpg" alt="Tornado Database">
         <button onclick="location.href='tornado/tornado_admin.php'">Tornado Database</button>
@@ -200,6 +200,11 @@ if (!isset($_SESSION['username'])) {
     <div class="form-action-bar">
       <button onclick="window.location.href='tropical_cyclone/tc_admin.php'">Manage Cyclones</button>
       <button class="logout-btn" onclick="window.location.href='logout.php'">Logout</button>
+      <br>
+      <p>Created by <a href="https://wx24yt.wixsite.com/fr24/tropical-update-1" target="_blank" rel="noopener noreferrer">StevenWxYT</a></p>
+      <!-- <button onclick="window.location.href='https://wx24yt.wixsite.com/fr24/tropical-update-1'" type="button">
+        Main Website
+      </button> -->
     </div>
   </main>
 </body>
