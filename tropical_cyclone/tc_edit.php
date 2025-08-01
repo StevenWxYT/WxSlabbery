@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_POST['fatalities'],
         $_POST['damages'],
         $_POST['ace'],
+        $_POST['history'], // <-- Added history
         $_GET['id'],
         $_FILES['image'],
         $_FILES['satellite_image']
@@ -64,6 +65,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <form method="POST" enctype="multipart/form-data">
+
+        <!-- Image fields -->
+        <?php if (!empty($data['image'])): ?>
+            <div class="current-image">
+                <strong>📊 Current Best Track Image:</strong><br>
+                <img src="../uploads/<?= htmlspecialchars($data['image']) ?>" alt="Best Track Image" style="max-width: 100%; max-height: 200px;">
+            </div>
+        <?php endif; ?>
+        <label for="image">🖼️ Replace Best Track Image (optional):</label>
+        <input type="file" name="image" id="image">
+
+        <?php if (!empty($data['satellite_image'])): ?>
+            <div class="current-image">
+                <strong>🛰️ Current Satellite Image:</strong><br>
+                <img src="../uploads/<?= htmlspecialchars($data['satellite_image']) ?>" alt="Satellite Image" style="max-width: 100%; max-height: 200px;">
+            </div>
+        <?php endif; ?>
+        <label for="satellite_image">📷 Replace Satellite Image (optional):</label>
+        <input type="file" name="satellite_image" id="satellite_image">
+
+        <!-- Form fields -->
         <input name="storm_id" type="text" value="<?= htmlspecialchars($data['storm_id']) ?>" placeholder="Storm ID" required>
         <input name="name" type="text" value="<?= htmlspecialchars($data['name']) ?>" placeholder="Name" required>
 
@@ -96,27 +118,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input name="damages" type="text" value="<?= htmlspecialchars($data['damages']) ?>" placeholder="Damages (USD or qualitative)" required>
         <input name="ace" type="number" step="0.01" value="<?= htmlspecialchars($data['ace']) ?>" placeholder="ACE" required>
 
-        <!-- Best Track Image Preview -->
-        <?php if (!empty($data['image'])): ?>
-            <div class="current-image">
-                <strong>Current Best Track Image:</strong><br>
-                <img src="../uploads/<?= htmlspecialchars($data['image']) ?>" alt="Best Track Image" style="max-width: 100%; max-height: 200px;">
-            </div>
-        <?php endif; ?>
-
-        <label for="image">🖼️ Replace Best Track Image (optional):</label>
-        <input type="file" name="image" id="image">
-
-        <!-- Satellite Image Preview -->
-        <?php if (!empty($data['satellite_image'])): ?>
-            <div class="current-image">
-                <strong>Current Satellite Image:</strong><br>
-                <img src="../uploads/<?= htmlspecialchars($data['satellite_image']) ?>" alt="Satellite Image" style="max-width: 100%; max-height: 200px;">
-            </div>
-        <?php endif; ?>
-
-        <label for="satellite_image">🛰️ Replace Satellite Image (optional):</label>
-        <input type="file" name="satellite_image" id="satellite_image">
+        <!-- ✅ History textarea -->
+        <label for="history">📝 Cyclone History:</label>
+        <textarea name="history" id="history" rows="6" placeholder="Cyclone history..."><?= htmlspecialchars($data['history']) ?></textarea>
 
         <button type="submit" class="primary-btn">✅ Update Cyclone</button>
         <a class="secondary-btn" href="tc_admin.php">⬅ Back to Cyclone Admin</a>

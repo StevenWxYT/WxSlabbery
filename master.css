@@ -544,3 +544,18 @@ button[name="delete"]:hover {
 .delete-btn:hover {
     background-color: #c82333;
 }
+
+
+.history-block {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #999;
+    border-radius: 8px;
+}
+
+.history-text {
+    white-space: pre-line;
+    font-family: 'Georgia', serif;
+    line-height: 1.6;
+}

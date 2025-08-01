@@ -120,68 +120,77 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
   </form>
 
   <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Storm ID</th>
-        <th>Name</th>
-        <th>Basin</th>
-        <th>Wind (kt)</th>
-        <th>Pressure (mb)</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Best Track</th>
-        <th>Satellite</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php if ($result && $result->num_rows > 0): ?>
-        <?php while ($row = $result->fetch_assoc()): ?>
-          <tr>
-            <td><?= htmlspecialchars($row['id']) ?></td>
-            <td><?= htmlspecialchars($row['storm_id']) ?></td>
-            <td><?= htmlspecialchars($row['name']) ?></td>
-            <td><?= htmlspecialchars($row['basin']) ?></td>
-            <td><?= htmlspecialchars($row['wind_speed']) ?></td>
-            <td><?= htmlspecialchars($row['pressure']) ?></td>
-            <td><?= htmlspecialchars($row['start_date']) ?></td>
-            <td><?= htmlspecialchars($row['end_date']) ?></td>
-
-            <td>
-              <?php if (!empty($row['image'])): ?>
-                <a href="<?= htmlspecialchars($row['image']) ?>" target="_blank">
-                  <img src="<?= htmlspecialchars($row['image']) ?>" alt="Best Track" class="thumb">
-                </a>
-              <?php else: ?>
-                <span class="thumb-na">N/A</span>
-              <?php endif; ?>
-            </td>
-
-            <td>
-              <?php if (!empty($row['satellite_image'])): ?>
-                <a href="<?= htmlspecialchars($row['satellite_image']) ?>" target="_blank">
-                  <img src="<?= htmlspecialchars($row['satellite_image']) ?>" alt="Satellite Image" class="thumb">
-                </a>
-              <?php else: ?>
-                <span class="thumb-na">N/A</span>
-              <?php endif; ?>
-            </td>
-
-            <td>
-              <a class="view-btn" href="tc_view.php?id=<?= $row['id'] ?>">🔍 View</a>
-              <a class="edit-btn" href="tc_edit.php?id=<?= $row['id'] ?>">✏️ Edit</a>
-              <a class="delete-btn" href="tc_delete.php?id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this record?');">🗑️ Delete</a>
-            </td>
-          </tr>
-        <?php endwhile; ?>
-      <?php else: ?>
+  <thead>
+    <tr>
+      <!-- Removed internal ID column -->
+      <th>Best Track</th>
+      <th>Satellite</th>
+      <th>Storm ID</th>
+      <th>Name</th>
+      <th>Basin</th>
+      <th>Wind (kt)</th>
+      <th>Pressure (mb)</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Fatalities</th>
+      <th>Damages</th>
+      <th>ACE</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php if ($result && $result->num_rows > 0): ?>
+      <?php while ($row = $result->fetch_assoc()): ?>
         <tr>
-          <td colspan="11">No cyclone records found.</td>
+          <!-- Best Track -->
+          <td>
+            <?php if (!empty($row['image'])): ?>
+              <a href="<?= htmlspecialchars($row['image']) ?>" target="_blank">
+                <img src="<?= htmlspecialchars($row['image']) ?>" alt="Best Track" class="thumb">
+              </a>
+            <?php else: ?>
+              <span class="thumb-na">N/A</span>
+            <?php endif; ?>
+          </td>
+
+          <!-- Satellite -->
+          <td>
+            <?php if (!empty($row['satellite_image'])): ?>
+              <a href="<?= htmlspecialchars($row['satellite_image']) ?>" target="_blank">
+                <img src="<?= htmlspecialchars($row['satellite_image']) ?>" alt="Satellite" class="thumb">
+              </a>
+            <?php else: ?>
+              <span class="thumb-na">N/A</span>
+            <?php endif; ?>
+          </td>
+
+          <!-- Remaining cyclone data -->
+          <td><?= htmlspecialchars($row['storm_id']) ?></td>
+          <td><?= htmlspecialchars($row['name']) ?></td>
+          <td><?= htmlspecialchars($row['basin']) ?></td>
+          <td><?= htmlspecialchars($row['wind_speed']) ?></td>
+          <td><?= htmlspecialchars($row['pressure']) ?></td>
+          <td><?= htmlspecialchars($row['start_date']) ?></td>
+          <td><?= htmlspecialchars($row['end_date']) ?></td>
+          <td><?= htmlspecialchars($row['fatalities']) ?></td>
+          <td><?= htmlspecialchars($row['damages']) ?></td>
+          <td><?= htmlspecialchars($row['ace']) ?></td>
+
+          <!-- Action buttons -->
+          <td>
+            <a class="view-btn" href="tc_view.php?id=<?= $row['id'] ?>">🔍 View</a>
+            <a class="edit-btn" href="tc_edit.php?id=<?= $row['id'] ?>">✏️ Edit</a>
+            <a class="delete-btn" href="tc_delete.php?id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this record?');">🗑️ Delete</a>
+          </td>
         </tr>
-      <?php endif; ?>
-    </tbody>
-  </table>
+      <?php endwhile; ?>
+    <?php else: ?>
+      <tr>
+        <td colspan="13">No cyclone records found.</td>
+      </tr>
+    <?php endif; ?>
+  </tbody>
+</table>
 
   <div class="pagination">
     <?php if ($totalPages > 1): ?>

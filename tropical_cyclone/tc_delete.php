@@ -6,44 +6,63 @@ $dbConn = new DBConn();
 $conn = $dbConn->getConnection();
 $functions = new DBFunc($conn);
 
-// Get ID and confirm flag
-$id = $_GET['id'] ?? null;
+$id = isset($_GET['id']) ? intval($_GET['id']) : null;
 $confirm = $_GET['confirm'] ?? null;
-
-// Basic validation
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Cyclone</title>
+    <link rel="stylesheet" href="../master.css">
+</head>
+<body>
+<div class="container">
+<?php
 if (!$id) {
-    echo "<h2>Error: Cyclone ID not provided.</h2>";
+    echo "<div class='error-box'><h2>Error: Cyclone ID not provided.</h2></div>";
+    echo "<a href='tc_admin.php' class='btn'>⬅ Back</a>";
     exit();
 }
 
-// Optional: confirm before deletion
 if ($confirm !== 'yes') {
+    echo "<div class='warning-box'>";
     echo "<h2>Are you sure you want to delete this cyclone?</h2>";
-    echo "<a href=\"tc_delete.php?id=" . urlencode($id) . "&confirm=yes\" style='color:red; font-weight:bold;'>Yes, delete it</a> | ";
-    echo "<a href=\"tc_admin.php\">Cancel</a>";
+    echo "<p>This action is <strong>irreversible</strong> and will permanently delete the record and any uploaded images.</p>";
+    echo "<a class='btn danger' href='tc_delete.php?id=" . urlencode($id) . "&confirm=yes'>✅ Yes, delete it</a> ";
+    echo "<a class='btn' href='tc_admin.php'>❌ Cancel</a>";
+    echo "</div>";
     exit();
 }
 
-// Fetch image paths to delete files too
+// Get image paths from database
 $imagePaths = $functions->getImagePathsById($id);
 
-// Proceed with deletion
+// Delete the database record
 $deleted = $functions->deleteDatabase($id);
 
 if ($deleted) {
-    // Delete images if found
-    if (!empty($imagePaths['image']) && file_exists('../uploads/' . $imagePaths['image'])) {
-        unlink('../uploads/' . $imagePaths['image']);
+    // Delete associated image files if present
+    $uploadDir = '../uploads/';
+
+    if (!empty($imagePaths['image'])) {
+        $img = $uploadDir . $imagePaths['image'];
+        if (file_exists($img)) unlink($img);
     }
-    if (!empty($imagePaths['satellite_image']) && file_exists('../uploads/' . $imagePaths['satellite_image'])) {
-        unlink('../uploads/' . $imagePaths['satellite_image']);
+
+    if (!empty($imagePaths['satellite_image'])) {
+        $sat = $uploadDir . $imagePaths['satellite_image'];
+        if (file_exists($sat)) unlink($sat);
     }
 
     header("Location: tc_admin.php?status=deleted");
     exit();
 } else {
-    echo "<h2>Error: Failed to delete cyclone.</h2>";
-    echo "<a href='tc_admin.php'>⬅ Back</a>";
+    echo "<div class='error-box'><h2>Error: Failed to delete cyclone record.</h2></div>";
+    echo "<a class='btn' href='tc_admin.php'>⬅ Back</a>";
     exit();
 }
 ?>
+</div>
+</body>
+</html>

@@ -33,17 +33,7 @@ if (!$data) {
 <div class="view-container">
     <h1>🌪️ Cyclone: <?= htmlspecialchars($data['name']) ?></h1>
 
-    <div class="info-block">
-        <p><strong>🆔 Storm ID:</strong> <?= htmlspecialchars($data['storm_id']) ?></p>
-        <p><strong>🗺️ Basin:</strong> <?= htmlspecialchars($data['basin']) ?></p>
-        <p><strong>💨 Wind Speed:</strong> <?= htmlspecialchars($data['wind_speed']) ?> knots</p>
-        <p><strong>🌡️ Pressure:</strong> <?= htmlspecialchars($data['pressure']) ?> mb</p>
-        <p><strong>📅 Duration:</strong> <?= htmlspecialchars($data['start_date']) ?> to <?= htmlspecialchars($data['end_date']) ?></p>
-        <p><strong>⚰️ Fatalities:</strong> <?= htmlspecialchars($data['fatalities']) ?></p>
-        <p><strong>💰 Damages:</strong> <?= htmlspecialchars($data['damages']) ?></p>
-        <p><strong>📈 ACE:</strong> <?= htmlspecialchars($data['ace']) ?></p>
-    </div>
-
+    <!-- Image blocks -->
     <?php if (!empty($data['image_best_track'])): ?>
         <div class="image-block">
             <h3>📍 Best Track Image</h3>
@@ -55,6 +45,28 @@ if (!$data) {
         <div class="image-block">
             <h3>🛰️ Satellite Imagery</h3>
             <img src="<?= htmlspecialchars($data['image_satellite']) ?>" alt="Satellite Imagery" class="cyclone-image">
+        </div>
+    <?php endif; ?>
+
+    <!-- Storm info -->
+    <div class="info-block">
+        <p><strong>🆔 Storm ID:</strong> <?= htmlspecialchars($data['storm_id']) ?></p>
+        <p><strong>🗺️ Basin:</strong> <?= htmlspecialchars($data['basin']) ?></p>
+        <p><strong>💨 Wind Speed:</strong> <?= htmlspecialchars($data['wind_speed']) ?> knots</p>
+        <p><strong>🌡️ Pressure:</strong> <?= htmlspecialchars($data['pressure']) ?> mb</p>
+        <p><strong>📅 Duration:</strong> <?= htmlspecialchars($data['start_date']) ?> to <?= htmlspecialchars($data['end_date']) ?></p>
+        <p><strong>⚰️ Fatalities:</strong> <?= htmlspecialchars($data['fatalities']) ?></p>
+        <p><strong>💰 Damages:</strong> <?= htmlspecialchars($data['damages']) ?></p>
+        <p><strong>📈 ACE:</strong> <?= htmlspecialchars($data['ace']) ?></p>
+    </div>
+
+    <!-- Meteorological history section -->
+    <?php if (!empty($data['history'])): ?>
+        <div class="history-block">
+            <h3>📜 Meteorological History</h3>
+            <div class="history-text">
+                <?= nl2br(htmlspecialchars($data['history'])) ?>
+            </div>
         </div>
     <?php endif; ?>
 
