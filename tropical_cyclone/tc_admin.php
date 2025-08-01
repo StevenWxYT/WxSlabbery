@@ -17,13 +17,27 @@ $nameFilter = $_GET['name'] ?? '';
 $basinFilter = $_GET['basin'] ?? '';
 $yearFilter = $_GET['year'] ?? '';
 
+// Basin definitions
+$basins = [
+  'NATL'  => 'North Atlantic',
+  'EPAC'  => 'East Pacific',
+  'CPAC'  => 'Central Pacific',
+  'WPAC'  => 'West Pacific',
+  'NIO'   => 'North Indian Ocean',
+  'SIO'   => 'South Indian Ocean',
+  'AU'    => 'Australian Region',
+  'SPAC'  => 'South Pacific',
+  'SEPAC' => 'Southeast Pacific',
+  'MED'   => 'Mediterranean/Black Sea'
+];
+
 // WHERE clause builder
 $where = [];
 if (!empty($nameFilter)) {
   $where[] = "name LIKE '%" . $conn->real_escape_string($nameFilter) . "%'";
 }
 if (!empty($basinFilter)) {
-  $where[] = "basin LIKE '%" . $conn->real_escape_string($basinFilter) . "%'";
+  $where[] = "basin = '" . $conn->real_escape_string($basinFilter) . "'";
 }
 if (!empty($yearFilter)) {
   $yearEscaped = $conn->real_escape_string($yearFilter);
@@ -42,11 +56,20 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <title>Tropical Cyclone Admin</title>
   <link rel="stylesheet" href="../master.css">
+  <style>
+    img.thumb {
+      height: 50px;
+      border-radius: 4px;
+    }
+    .thumb-na {
+      color: gray;
+      font-size: 0.9em;
+    }
+  </style>
 </head>
 
 <body>
@@ -82,16 +105,11 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
     <label for="basin">Basin:</label>
     <select id="basin" name="basin">
       <option value="">-- Select Basin --</option>
-      <option value="NATL" <?= $basinFilter == 'NATL' ? 'selected' : '' ?>>North Atlantic</option>
-      <option value="EPAC" <?= $basinFilter == 'EPAC' ? 'selected' : '' ?>>East Pacific</option>
-      <option value="CPAC" <?= $basinFilter == 'CPAC' ? 'selected' : '' ?>>Central Pacific</option>
-      <option value="WPAC" <?= $basinFilter == 'WPAC' ? 'selected' : '' ?>>West Pacific</option>
-      <option value="SEPC" <?= $basinFilter == 'SEPAC' ? 'selected' : '' ?>>Southeast Pacific</option>
-      <option value="NIO" <?= $basinFilter == 'NIO'  ? 'selected' : '' ?>>North Indian Ocean</option>
-      <option value="SIO" <?= $basinFilter == 'SIO'  ? 'selected' : '' ?>>South Indian Ocean</option>
-      <option value="SPAC" <?= $basinFilter == 'SPAC' ? 'selected' : '' ?>>South Pacific</option>
-      <option value="SATL" <?= $basinFilter == 'SATL' ? 'selected' : '' ?>>South Atlantic</option>
-      <option value="MEDI" <?= $basinFilter == 'MED' ? 'selected' : '' ?>>Mediterranean/Black Sea</option>
+      <?php foreach ($basins as $code => $label): ?>
+        <option value="<?= htmlspecialchars($code) ?>" <?= $basinFilter === $code ? 'selected' : '' ?>>
+          <?= htmlspecialchars($label) ?>
+        </option>
+      <?php endforeach; ?>
     </select>
 
     <label for="year">Year:</label>
@@ -112,6 +130,8 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
         <th>Pressure (mb)</th>
         <th>Start</th>
         <th>End</th>
+        <th>Best Track</th>
+        <th>Satellite</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -127,6 +147,27 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
             <td><?= htmlspecialchars($row['pressure']) ?></td>
             <td><?= htmlspecialchars($row['start_date']) ?></td>
             <td><?= htmlspecialchars($row['end_date']) ?></td>
+
+            <td>
+              <?php if (!empty($row['image'])): ?>
+                <a href="<?= htmlspecialchars($row['image']) ?>" target="_blank">
+                  <img src="<?= htmlspecialchars($row['image']) ?>" alt="Best Track" class="thumb">
+                </a>
+              <?php else: ?>
+                <span class="thumb-na">N/A</span>
+              <?php endif; ?>
+            </td>
+
+            <td>
+              <?php if (!empty($row['satellite_image'])): ?>
+                <a href="<?= htmlspecialchars($row['satellite_image']) ?>" target="_blank">
+                  <img src="<?= htmlspecialchars($row['satellite_image']) ?>" alt="Satellite Image" class="thumb">
+                </a>
+              <?php else: ?>
+                <span class="thumb-na">N/A</span>
+              <?php endif; ?>
+            </td>
+
             <td>
               <a class="view-btn" href="tc_view.php?id=<?= $row['id'] ?>">🔍 View</a>
               <a class="edit-btn" href="tc_edit.php?id=<?= $row['id'] ?>">✏️ Edit</a>
@@ -136,7 +177,7 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
         <?php endwhile; ?>
       <?php else: ?>
         <tr>
-          <td colspan="9">No cyclone records found.</td>
+          <td colspan="11">No cyclone records found.</td>
         </tr>
       <?php endif; ?>
     </tbody>
@@ -145,8 +186,7 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
   <div class="pagination">
     <?php if ($totalPages > 1): ?>
       <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-        <a class="page-link <?= $i === $page ? 'active' : '' ?>"
-          href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>">
+        <a class="page-link <?= $i === $page ? 'active' : '' ?>" href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>">
           <?= $i ?>
         </a>
       <?php endfor; ?>
@@ -154,5 +194,4 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
   </div>
 
 </body>
-
 </html>

@@ -145,19 +145,28 @@ public function logoutUser()
     }
 
     // --- INSERT CYCLONE DATA ---
-    public function insertDatabase($storm_id, $name, $basin, $wind_speed, $pressure, $start_date, $end_date, $fatalities, $damages, $ace, $file)
-    {
-        $imagePath = $this->handleImageUpload($file);
-        $stmt = $this->conn->prepare("INSERT INTO tcdatabase (storm_id, name, basin, wind_speed, pressure, start_date, end_date, fatalities, damages, ace, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssiisssiss", $storm_id, $name, $basin, $wind_speed, $pressure, $start_date, $end_date, $fatalities, $damages, $ace, $imagePath);
+    public function insertDatabase($storm_id, $name, $basin, $wind_speed, $pressure, $start_date, $end_date, $fatalities, $damages, $ace, $imageFile, $satelliteImageFile)
+{
+    $imagePath = $this->handleImageUpload($imageFile);
+    $satelliteImagePath = $this->handleImageUpload($satelliteImageFile);
 
-        if ($stmt->execute()) {
-            header("Location: tc_admin.php");
-            exit();
-        } else {
-            echo "Insert error: " . $stmt->error;
-        }
+    $stmt = $this->conn->prepare("INSERT INTO tcdatabase (
+        storm_id, name, basin, wind_speed, pressure, start_date, end_date, fatalities, damages, ace, image, satellite_image
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    $stmt->bind_param(
+        "sssiisssisss",
+        $storm_id, $name, $basin, $wind_speed, $pressure, $start_date,
+        $end_date, $fatalities, $damages, $ace, $imagePath, $satelliteImagePath
+    );
+
+    if ($stmt->execute()) {
+        header("Location: tc_admin.php");
+        exit();
+    } else {
+        echo "Insert error: " . $stmt->error;
     }
+}
 
     // --- UPDATE CYCLONE DATA ---
     public function updateDatabase($storm_id, $name, $basin, $wind_speed, $pressure, $start_date, $end_date, $fatalities, $damages, $ace, $id, $file = null)
@@ -303,6 +312,15 @@ public function insertTornado($location, $date, $fujita_rank, $wind_speed, $max_
 
         return null;
     }
+
+public function getImagePathsById($id)
+{
+    $stmt = $this->conn->prepare("SELECT image, satellite_image FROM tcdatabase WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_assoc() ?? ['image' => '', 'satellite_image' => ''];
+}
 
     public function showIBTracsStorm($sid)
 {

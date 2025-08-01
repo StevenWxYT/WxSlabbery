@@ -24,10 +24,21 @@ if ($confirm !== 'yes') {
     exit();
 }
 
+// Fetch image paths to delete files too
+$imagePaths = $functions->getImagePathsById($id);
+
 // Proceed with deletion
 $deleted = $functions->deleteDatabase($id);
 
 if ($deleted) {
+    // Delete images if found
+    if (!empty($imagePaths['image']) && file_exists('../uploads/' . $imagePaths['image'])) {
+        unlink('../uploads/' . $imagePaths['image']);
+    }
+    if (!empty($imagePaths['satellite_image']) && file_exists('../uploads/' . $imagePaths['satellite_image'])) {
+        unlink('../uploads/' . $imagePaths['satellite_image']);
+    }
+
     header("Location: tc_admin.php?status=deleted");
     exit();
 } else {

@@ -44,9 +44,17 @@ if (!$data) {
         <p><strong>📈 ACE:</strong> <?= htmlspecialchars($data['ace']) ?></p>
     </div>
 
-    <?php if (!empty($data['image_path'])): ?>
+    <?php if (!empty($data['image_best_track'])): ?>
         <div class="image-block">
-            <img src="<?= htmlspecialchars($data['image_path']) ?>" alt="Cyclone Image" class="cyclone-image">
+            <h3>📍 Best Track Image</h3>
+            <img src="<?= htmlspecialchars($data['image_best_track']) ?>" alt="Best Track" class="cyclone-image">
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($data['image_satellite'])): ?>
+        <div class="image-block">
+            <h3>🛰️ Satellite Imagery</h3>
+            <img src="<?= htmlspecialchars($data['image_satellite']) ?>" alt="Satellite Imagery" class="cyclone-image">
         </div>
     <?php endif; ?>
 
