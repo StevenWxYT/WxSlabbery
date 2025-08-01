@@ -202,7 +202,7 @@ if (!isset($_SESSION['username'])) {
       <button class="logout-btn" onclick="window.location.href='logout.php'">Logout</button>
       <br>
       <p>This is only for personal project purposes.</p>
-      <p>All offical datsets, forecasts and trackers can be found <a href="https://wx24yt.wixsite.com/fr24/tropical-update-1" target="_blank" rel="noopener noreferrer">in these listed websites</a></p>
+      <p>All offical datasets, forecasts and trackers can be found <a href="https://wx24yt.wixsite.com/fr24/tropical-update-1" target="_blank" rel="noopener noreferrer">in these listed websites</a></p>
       <!-- <button onclick="window.location.href='https://wx24yt.wixsite.com/fr24/tropical-update-1'" type="button">
         Main Website
       </button> -->
