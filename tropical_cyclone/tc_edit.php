@@ -67,7 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form method="POST" enctype="multipart/form-data">
             <input name="storm_id" type="text" value="<?= htmlspecialchars($data['storm_id']) ?>" placeholder="Storm ID" required>
             <input name="name" type="text" value="<?= htmlspecialchars($data['name']) ?>" placeholder="Name" required>
-            <label for="basin">Basin:</label>
             <select id="basin" name="basin" required>
                 <option value="">-- Select Basin --</option>
                 <option value="NATL" <?= $data['basin'] == 'NATL' ? 'selected' : '' ?>>North Atlantic</option>
