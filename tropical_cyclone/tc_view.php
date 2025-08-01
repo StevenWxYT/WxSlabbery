@@ -33,7 +33,7 @@ if (!$data) {
 <div class="view-container">
     <h1>🌪️ Cyclone: <?= htmlspecialchars($data['name']) ?></h1>
 
-    <!-- Image blocks -->
+    <!-- Best Track Image -->
     <?php if (!empty($data['image_best_track'])): ?>
         <div class="image-block">
             <h3>📍 Best Track Image</h3>
@@ -41,6 +41,7 @@ if (!$data) {
         </div>
     <?php endif; ?>
 
+    <!-- Satellite Imagery -->
     <?php if (!empty($data['image_satellite'])): ?>
         <div class="image-block">
             <h3>🛰️ Satellite Imagery</h3>
@@ -48,7 +49,7 @@ if (!$data) {
         </div>
     <?php endif; ?>
 
-    <!-- Storm info -->
+    <!-- Cyclone Info -->
     <div class="info-block">
         <p><strong>🆔 Storm ID:</strong> <?= htmlspecialchars($data['storm_id']) ?></p>
         <p><strong>🗺️ Basin:</strong> <?= htmlspecialchars($data['basin']) ?></p>
@@ -60,7 +61,7 @@ if (!$data) {
         <p><strong>📈 ACE:</strong> <?= htmlspecialchars($data['ace']) ?></p>
     </div>
 
-    <!-- Meteorological history section -->
+    <!-- Meteorological History -->
     <?php if (!empty($data['history'])): ?>
         <div class="history-block">
             <h3>📜 Meteorological History</h3>
@@ -70,6 +71,7 @@ if (!$data) {
         </div>
     <?php endif; ?>
 
+    <!-- Buttons -->
     <div class="button-group">
         <a class="secondary-btn" href="tc_admin.php">⬅ Back to Cyclone List</a>
         <a class="primary-btn" href="tc_edit.php?id=<?= urlencode($_GET['id']) ?>">✏️ Edit Cyclone</a>

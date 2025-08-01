@@ -11,6 +11,11 @@ $success = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // ACE validation: up to 4 decimal places
+        if (!preg_match('/^\d+(\.\d{1,4})?$/', $_POST['ace'])) {
+            throw new Exception("ACE must be a number with up to 4 decimal places.");
+        }
+
         $functions->insertDatabase(
             $_POST['storm_id'],
             $_POST['name'],
@@ -85,9 +90,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input name="pressure" type="number" placeholder="Pressure (mb)" value="<?= $_POST['pressure'] ?? '' ?>" required>
             <input name="start_date" type="date" value="<?= $_POST['start_date'] ?? '' ?>" required>
             <input name="end_date" type="date" value="<?= $_POST['end_date'] ?? '' ?>" required>
-            <input name="fatalities" type="number" placeholder="Fatalities" value="<?= $_POST['fatalities'] ?? '' ?>" required>
+            <input name="fatalities" type="text" placeholder="Fatalities (e.g. 3(2) or 3 dead (2 injured))" value="<?= $_POST['fatalities'] ?? '' ?>" required>
             <input name="damages" placeholder="Damages (USD or qualitative)" value="<?= $_POST['damages'] ?? '' ?>" required>
-            <input name="ace" type="number" step="0.01" placeholder="ACE (Accumulated Cyclone Energy)" value="<?= $_POST['ace'] ?? '' ?>" required>
+            <input name="ace" type="text" placeholder="ACE (e.g. 3.1412)" pattern="^\d+(\.\d{1,4})?$" value="<?= $_POST['ace'] ?? '' ?>" required>
 
             <!-- Essay-style meteorological history input -->
             <label for="history">📝 Meteorological History:</label>

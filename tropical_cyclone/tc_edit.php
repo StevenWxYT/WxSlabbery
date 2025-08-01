@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_POST['fatalities'],
         $_POST['damages'],
         $_POST['ace'],
-        $_POST['history'], // <-- Added history
+        $_POST['history'],
         $_GET['id'],
         $_FILES['image'],
         $_FILES['satellite_image']
@@ -114,11 +114,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input name="pressure" type="number" value="<?= htmlspecialchars($data['pressure']) ?>" placeholder="Pressure (mb)" required>
         <input name="start_date" type="date" value="<?= htmlspecialchars($data['start_date']) ?>" required>
         <input name="end_date" type="date" value="<?= htmlspecialchars($data['end_date']) ?>" required>
-        <input name="fatalities" type="number" value="<?= htmlspecialchars($data['fatalities']) ?>" placeholder="Fatalities" required>
-        <input name="damages" type="text" value="<?= htmlspecialchars($data['damages']) ?>" placeholder="Damages (USD or qualitative)" required>
-        <input name="ace" type="number" step="0.01" value="<?= htmlspecialchars($data['ace']) ?>" placeholder="ACE" required>
 
-        <!-- ✅ History textarea -->
+        <!-- ✅ Updated fields -->
+        <input name="fatalities" type="text" value="<?= htmlspecialchars($data['fatalities']) ?>" placeholder="Fatalities (e.g. 3(2))" required>
+        <input name="damages" type="text" value="<?= htmlspecialchars($data['damages']) ?>" placeholder="Damages (USD or qualitative)" required>
+        <input name="ace" type="text" pattern="^\d+(\.\d{1,4})?$" value="<?= htmlspecialchars($data['ace']) ?>" placeholder="ACE (e.g. 42.1234)" required>
+
+        <!-- Cyclone History -->
         <label for="history">📝 Cyclone History:</label>
         <textarea name="history" id="history" rows="6" placeholder="Cyclone history..."><?= htmlspecialchars($data['history']) ?></textarea>
 
