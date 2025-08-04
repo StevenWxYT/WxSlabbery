@@ -110,8 +110,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endforeach; ?>
         </select>
 
-        <input name="wind_speed" type="number" value="<?= htmlspecialchars($data['wind_speed']) ?>" placeholder="Wind Speed (kt)" required>
-        <input name="pressure" type="number" value="<?= htmlspecialchars($data['pressure']) ?>" placeholder="Pressure (mb)" required>
+        <input name="wind_speed" type="number" value="<?= htmlspecialchars($data['wind_speed']) ?>" placeholder="Wind Speed (mph)" required>
+        <input name="pressure" type="number" value="<?= htmlspecialchars($data['pressure']) ?>" placeholder="Pressure (mbar)" required>
         <input name="start_date" type="date" value="<?= htmlspecialchars($data['start_date']) ?>" required>
         <input name="end_date" type="date" value="<?= htmlspecialchars($data['end_date']) ?>" required>
 

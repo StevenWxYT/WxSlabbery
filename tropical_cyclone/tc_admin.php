@@ -167,12 +167,12 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
             <td><?= htmlspecialchars($row['storm_id']) ?></td>
             <td><?= htmlspecialchars($row['name']) ?></td>
             <td><?= htmlspecialchars($row['basin']) ?></td>
-            <td><?= htmlspecialchars($row['wind_speed']) ?></td>
-            <td><?= htmlspecialchars($row['pressure']) ?></td>
+            <td><?= htmlspecialchars($row['wind_speed']) ?>mph</td>
+            <td><?= htmlspecialchars($row['pressure']) ?>mbar</td>
             <td><?= htmlspecialchars($row['start_date']) ?></td>
             <td><?= htmlspecialchars($row['end_date']) ?></td>
             <td><?= htmlspecialchars($row['fatalities']) ?></td>
-            <td><?= htmlspecialchars($row['damages']) ?></td>
+            <td>USD $<?= htmlspecialchars($row['damages']) ?></td>
             <td><?= htmlspecialchars($row['ace']) ?></td>
 
             <!-- Actions -->

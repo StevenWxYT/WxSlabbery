@@ -86,8 +86,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <option value="MED" <?= ($_POST['basin'] ?? '') == 'MED'  ? 'selected' : '' ?>>Mediterranean / Black Sea</option>
             </select>
 
-            <input name="wind_speed" type="number" placeholder="Wind Speed (kt)" value="<?= $_POST['wind_speed'] ?? '' ?>" required>
-            <input name="pressure" type="number" placeholder="Pressure (mb)" value="<?= $_POST['pressure'] ?? '' ?>" required>
+            <input name="wind_speed" type="number" placeholder="Wind Speed (mph)" value="<?= $_POST['wind_speed'] ?? '' ?>" required>
+            <input name="pressure" type="number" placeholder="Pressure (mbar)" value="<?= $_POST['pressure'] ?? '' ?>" required>
             <input name="start_date" type="date" value="<?= $_POST['start_date'] ?? '' ?>" required>
             <input name="end_date" type="date" value="<?= $_POST['end_date'] ?? '' ?>" required>
             <input name="fatalities" type="text" placeholder="Fatalities (e.g. 3(2) or 3 dead (2 injured))" value="<?= $_POST['fatalities'] ?? '' ?>" required>

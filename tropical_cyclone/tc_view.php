@@ -51,14 +51,14 @@ if (!$data) {
 
     <!-- Cyclone Info -->
     <div class="info-block">
-        <p><strong>🆔 Storm ID:</strong> <?= htmlspecialchars($data['storm_id']) ?></p>
-        <p><strong>🗺️ Basin:</strong> <?= htmlspecialchars($data['basin']) ?></p>
-        <p><strong>💨 Wind Speed:</strong> <?= htmlspecialchars($data['wind_speed']) ?> knots</p>
-        <p><strong>🌡️ Pressure:</strong> <?= htmlspecialchars($data['pressure']) ?> mb</p>
-        <p><strong>📅 Duration:</strong> <?= htmlspecialchars($data['start_date']) ?> to <?= htmlspecialchars($data['end_date']) ?></p>
-        <p><strong>⚰️ Fatalities:</strong> <?= htmlspecialchars($data['fatalities']) ?></p>
-        <p><strong>💰 Damages:</strong> <?= htmlspecialchars($data['damages']) ?></p>
-        <p><strong>📈 ACE:</strong> <?= htmlspecialchars($data['ace']) ?></p>
+        <p><strong>🆔 Storm ID: </strong> <?= htmlspecialchars($data['storm_id']) ?></p>
+        <p><strong>🗺️ Basin: </strong> <?= htmlspecialchars($data['basin']) ?></p>
+        <p><strong>💨 Wind Speed: </strong> <?= htmlspecialchars($data['wind_speed']) ?>mph</p>
+        <p><strong>🌡️ Pressure: </strong> <?= htmlspecialchars($data['pressure']) ?>mbar</p>
+        <p><strong>📅 Duration: </strong> <?= htmlspecialchars($data['start_date']) ?> to <?= htmlspecialchars($data['end_date']) ?></p>
+        <p><strong>⚰️ Fatalities: USD $</strong> <?= htmlspecialchars($data['fatalities']) ?></p>
+        <p><strong>💰 Damages: </strong> <?= htmlspecialchars($data['damages']) ?></p>
+        <p><strong>📈 ACE: </strong> <?= htmlspecialchars($data['ace']) ?></p>
     </div>
 
     <!-- Meteorological History -->
