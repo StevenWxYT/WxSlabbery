@@ -69,10 +69,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="file" name="satellite_image" id="satellite_image">
 
             <!-- Core inputs -->
-            <input name="storm_id" placeholder="Storm ID" value="<?= $_POST['storm_id'] ?? '' ?>" required>
-            <input name="name" placeholder="Name" value="<?= $_POST['name'] ?? '' ?>" required>
+            <input name="storm_id" placeholder="Storm ID" value="<?= $_POST['storm_id'] ?? '' ?>" >
+            <input name="name" placeholder="Name" value="<?= $_POST['name'] ?? '' ?>" >
 
-            <select id="basin" name="basin" required>
+            <select id="basin" name="basin" >
                 <option value="">-- Select Basin --</option>
                 <option value="NATL" <?= ($_POST['basin'] ?? '') == 'NATL' ? 'selected' : '' ?>>North Atlantic</option>
                 <option value="EPAC" <?= ($_POST['basin'] ?? '') == 'EPAC' ? 'selected' : '' ?>>East Pacific</option>
@@ -86,17 +86,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <option value="MED" <?= ($_POST['basin'] ?? '') == 'MED'  ? 'selected' : '' ?>>Mediterranean / Black Sea</option>
             </select>
 
-            <input name="wind_speed" type="number" placeholder="Wind Speed (mph)" value="<?= $_POST['wind_speed'] ?? '' ?>" required>
-            <input name="pressure" type="number" placeholder="Pressure (mbar)" value="<?= $_POST['pressure'] ?? '' ?>" required>
-            <input name="start_date" type="date" value="<?= $_POST['start_date'] ?? '' ?>" required>
-            <input name="end_date" type="date" value="<?= $_POST['end_date'] ?? '' ?>" required>
-            <input name="fatalities" type="text" placeholder="Fatalities (e.g. 3(2) or 3 dead (2 injured))" value="<?= $_POST['fatalities'] ?? '' ?>" required>
-            <input name="damages" placeholder="Damages (USD or qualitative)" value="<?= $_POST['damages'] ?? '' ?>" required>
-            <input name="ace" type="text" placeholder="ACE (e.g. 3.1412)" pattern="^\d+(\.\d{1,4})?$" value="<?= $_POST['ace'] ?? '' ?>" required>
+            <input name="wind_speed" type="number" placeholder="Wind Speed (mph)" value="<?= $_POST['wind_speed'] ?? '' ?>" >
+            <input name="pressure" type="number" placeholder="Pressure (mbar)" value="<?= $_POST['pressure'] ?? '' ?>" >
+            <input name="start_date" type="date" value="<?= $_POST['start_date'] ?? '' ?>" >
+            <input name="end_date" type="date" value="<?= $_POST['end_date'] ?? '' ?>" >
+            <input name="fatalities" type="text" placeholder="Fatalities (e.g. 3(2) or 3 dead (2 injured))" value="<?= $_POST['fatalities'] ?? '' ?>" >
+            <input name="damages" placeholder="Damages (USD or qualitative)" value="<?= $_POST['damages'] ?? '' ?>" >
+            <input name="ace" type="text" placeholder="ACE (e.g. 3.1412)" pattern="^\d+(\.\d{1,4})?$" value="<?= $_POST['ace'] ?? '' ?>" >
 
             <!-- Essay-style meteorological history input -->
             <label for="history">📝 Meteorological History:</label>
-            <textarea id="history" name="history" rows="10" placeholder="Write detailed meteorological history here..." required><?= $_POST['history'] ?? '' ?></textarea>
+            <textarea id="history" name="history" rows="10" placeholder="Write detailed meteorological history here..." ><?= $_POST['history'] ?? '' ?></textarea>
 
             <button type="submit" class="primary-btn">➕ Add Cyclone</button>
         </form>

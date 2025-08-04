@@ -86,10 +86,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="file" name="satellite_image" id="satellite_image">
 
         <!-- Form fields -->
-        <input name="storm_id" type="text" value="<?= htmlspecialchars($data['storm_id']) ?>" placeholder="Storm ID" required>
-        <input name="name" type="text" value="<?= htmlspecialchars($data['name']) ?>" placeholder="Name" required>
+        <input name="storm_id" type="text" value="<?= htmlspecialchars($data['storm_id']) ?>" placeholder="Storm ID" >
+        <input name="name" type="text" value="<?= htmlspecialchars($data['name']) ?>" placeholder="Name" >
 
-        <select id="basin" name="basin" required>
+        <select id="basin" name="basin" >
             <option value="">-- Select Basin --</option>
             <?php
             $basins = [
@@ -110,15 +110,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endforeach; ?>
         </select>
 
-        <input name="wind_speed" type="number" value="<?= htmlspecialchars($data['wind_speed']) ?>" placeholder="Wind Speed (mph)" required>
-        <input name="pressure" type="number" value="<?= htmlspecialchars($data['pressure']) ?>" placeholder="Pressure (mbar)" required>
-        <input name="start_date" type="date" value="<?= htmlspecialchars($data['start_date']) ?>" required>
-        <input name="end_date" type="date" value="<?= htmlspecialchars($data['end_date']) ?>" required>
+        <input name="wind_speed" type="number" value="<?= htmlspecialchars($data['wind_speed']) ?>" placeholder="Wind Speed (mph)" >
+        <input name="pressure" type="number" value="<?= htmlspecialchars($data['pressure']) ?>" placeholder="Pressure (mbar)" >
+        <input name="start_date" type="date" value="<?= htmlspecialchars($data['start_date']) ?>" >
+        <input name="end_date" type="date" value="<?= htmlspecialchars($data['end_date']) ?>" >
 
         <!-- ✅ Updated fields -->
-        <input name="fatalities" type="text" value="<?= htmlspecialchars($data['fatalities']) ?>" placeholder="Fatalities (e.g. 3(2))" required>
-        <input name="damages" type="text" value="<?= htmlspecialchars($data['damages']) ?>" placeholder="Damages (USD or qualitative)" required>
-        <input name="ace" type="text" pattern="^\d+(\.\d{1,4})?$" value="<?= htmlspecialchars($data['ace']) ?>" placeholder="ACE (e.g. 42.1234)" required>
+        <input name="fatalities" type="text" value="<?= htmlspecialchars($data['fatalities']) ?>" placeholder="Fatalities (e.g. 3(2))" >
+        <input name="damages" type="text" value="<?= htmlspecialchars($data['damages']) ?>" placeholder="Damages (USD or qualitative)" >
+        <input name="ace" type="text" pattern="^\d+(\.\d{1,4})?$" value="<?= htmlspecialchars($data['ace']) ?>" placeholder="ACE (e.g. 42.1234)" >
 
         <!-- Cyclone History -->
         <label for="history">📝 Cyclone History:</label>
