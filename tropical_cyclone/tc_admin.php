@@ -56,15 +56,23 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Tropical Cyclone Admin</title>
+  <link rel="icon" type="image/png" href="./img/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="./img/favicon.svg" />
+  <link rel="shortcut icon" href="./img/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="StevenWx" />
+  <link rel="manifest" href="./img/site.webmanifest" />
   <link rel="stylesheet" href="../master.css">
   <style>
     img.thumb {
       height: 50px;
       border-radius: 4px;
     }
+
     .thumb-na {
       color: gray;
       font-size: 0.9em;
@@ -202,4 +210,5 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
   </div>
 
 </body>
+
 </html>

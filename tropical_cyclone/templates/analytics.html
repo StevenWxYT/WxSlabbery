@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IBTrACS Analytics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='ibtracs.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-hurricane"></i>
+                <span>IBTrACS</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/dashboard" class="nav-link"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="/storm-tracker" class="nav-link"><i class="fas fa-map-marked-alt"></i> Storm Tracker</a></li>
+                <li><a href="/analytics" class="nav-link active"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1><i class="fas fa-chart-bar"></i> IBTrACS Analytics</h1>
+            <p>Advanced data analysis and insights</p>
+        </header>
+
+        <div class="analytics-filters">
+            <div class="filter-group">
+                <label for="analytics-year-start">Start Year:</label>
+                <select id="analytics-year-start">
+                    <option value="">All</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="analytics-year-end">End Year:</label>
+                <select id="analytics-year-end">
+                    <option value="">All</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="analytics-basin">Basin:</label>
+                <select id="analytics-basin">
+                    <option value="">All Basins</option>
+                </select>
+            </div>
+            <button class="analyze-btn" onclick="updateAnalytics()">
+                <i class="fas fa-chart-line"></i> Analyze
+            </button>
+        </div>
+
+        <div class="analytics-grid">
+            <div class="analytics-card">
+                <h3><i class="fas fa-chart-line"></i> Annual Storm Frequency</h3>
+                <canvas id="annualFrequencyChart"></canvas>
+            </div>
+            
+            <div class="analytics-card">
+                <h3><i class="fas fa-chart-pie"></i> Basin Distribution Over Time</h3>
+                <canvas id="basinTimeChart"></canvas>
+            </div>
+            
+            <div class="analytics-card">
+                <h3><i class="fas fa-chart-bar"></i> Intensity Distribution</h3>
+                <canvas id="intensityChart"></canvas>
+            </div>
+            
+            <div class="analytics-card">
+                <h3><i class="fas fa-chart-area"></i> Wind Speed Trends</h3>
+                <canvas id="windTrendsChart"></canvas>
+            </div>
+            
+            <div class="analytics-card">
+                <h3><i class="fas fa-chart-scatter"></i> Wind vs Pressure Correlation</h3>
+                <canvas id="correlationChart"></canvas>
+            </div>
+            
+            <div class="analytics-card">
+                <h3><i class="fas fa-table"></i> Statistical Summary</h3>
+                <div id="stats-summary" class="stats-summary"></div>
+            </div>
+        </div>
+
+        <div class="insights-section">
+            <h3><i class="fas fa-lightbulb"></i> Key Insights</h3>
+            <div id="insights-content" class="insights-content"></div>
+        </div>
+    </main>
+
+    <script>
+        let charts = {};
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFilterOptions();
+            updateAnalytics();
+        });
+
+        async function loadFilterOptions() {
+            try {
+                const yearsResponse = await fetch('/api/seasons');
+                const years = await yearsResponse.json();
+                
+                const yearStartSelect = document.getElementById('analytics-year-start');
+                const yearEndSelect = document.getElementById('analytics-year-end');
+                
+                years.forEach(year => {
+                    const option1 = document.createElement('option');
+                    option1.value = year;
+                    option1.textContent = year;
+                    yearStartSelect.appendChild(option1);
+                    
+                    const option2 = document.createElement('option');
+                    option2.value = year;
+                    option2.textContent = year;
+                    yearEndSelect.appendChild(option2);
+                });
+
+                const basinsResponse = await fetch('/api/basins');
+                const basins = await basinsResponse.json();
+                const basinSelect = document.getElementById('analytics-basin');
+                basins.forEach(basin => {
+                    const option = document.createElement('option');
+                    option.value = basin;
+                    option.textContent = basin;
+                    basinSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading filter options:', error);
+            }
+        }
+
+        async function updateAnalytics() {
+            const startYear = document.getElementById('analytics-year-start').value;
+            const endYear = document.getElementById('analytics-year-end').value;
+            const basin = document.getElementById('analytics-basin').value;
+
+            try {
+                const response = await fetch(`/api/ibtracs?season=${startYear}&basin=${basin}&limit=10000`);
+                const data = await response.json();
+                
+                // Filter by end year if specified
+                let filteredData = data;
+                if (endYear) {
+                    filteredData = data.filter(storm => storm.season <= parseInt(endYear));
+                }
+
+                createAnnualFrequencyChart(filteredData);
+                createBasinTimeChart(filteredData);
+                createIntensityChart(filteredData);
+                createWindTrendsChart(filteredData);
+                createCorrelationChart(filteredData);
+                updateStatsSummary(filteredData);
+                generateInsights(filteredData);
+                
+            } catch (error) {
+                console.error('Error updating analytics:', error);
+            }
+        }
+
+        function createAnnualFrequencyChart(data) {
+            const ctx = document.getElementById('annualFrequencyChart');
+            if (charts.annualFrequency) {
+                charts.annualFrequency.destroy();
+            }
+
+            const yearCounts = {};
+            data.forEach(storm => {
+                yearCounts[storm.season] = (yearCounts[storm.season] || 0) + 1;
+            });
+
+            const years = Object.keys(yearCounts).sort();
+            const counts = years.map(year => yearCounts[year]);
+
+            charts.annualFrequency = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Number of Storms',
+                        data: counts,
+                        borderColor: '#36A2EB',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function createBasinTimeChart(data) {
+            const ctx = document.getElementById('basinTimeChart');
+            if (charts.basinTime) {
+                charts.basinTime.destroy();
+            }
+
+            const basinData = {};
+            data.forEach(storm => {
+                if (!basinData[storm.basin]) {
+                    basinData[storm.basin] = {};
+                }
+                basinData[storm.basin][storm.season] = (basinData[storm.basin][storm.season] || 0) + 1;
+            });
+
+            const basins = Object.keys(basinData);
+            const years = [...new Set(data.map(storm => storm.season))].sort();
+
+            const datasets = basins.map((basin, index) => ({
+                label: basin,
+                data: years.map(year => basinData[basin][year] || 0),
+                borderColor: getColor(index),
+                backgroundColor: getColor(index, 0.1),
+                tension: 0.1
+            }));
+
+            charts.basinTime = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function createIntensityChart(data) {
+            const ctx = document.getElementById('intensityChart');
+            if (charts.intensity) {
+                charts.intensity.destroy();
+            }
+
+            const intensityRanges = {
+                'Tropical Storm (34-63 kt)': 0,
+                'Category 1 (64-82 kt)': 0,
+                'Category 2 (83-95 kt)': 0,
+                'Category 3 (96-112 kt)': 0,
+                'Category 4 (113-134 kt)': 0,
+                'Category 5 (135+ kt)': 0
+            };
+
+            data.forEach(storm => {
+                const wind = storm.wind;
+                if (wind >= 135) intensityRanges['Category 5 (135+ kt)']++;
+                else if (wind >= 113) intensityRanges['Category 4 (113-134 kt)']++;
+                else if (wind >= 96) intensityRanges['Category 3 (96-112 kt)']++;
+                else if (wind >= 83) intensityRanges['Category 2 (83-95 kt)']++;
+                else if (wind >= 64) intensityRanges['Category 1 (64-82 kt)']++;
+                else if (wind >= 34) intensityRanges['Tropical Storm (34-63 kt)']++;
+            });
+
+            charts.intensity = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(intensityRanges),
+                    datasets: [{
+                        label: 'Number of Storms',
+                        data: Object.values(intensityRanges),
+                        backgroundColor: [
+                            '#00FFFF', '#00FF00', '#FFFF00', '#FF9900', '#FF6600', '#FF0000'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function createWindTrendsChart(data) {
+            const ctx = document.getElementById('windTrendsChart');
+            if (charts.windTrends) {
+                charts.windTrends.destroy();
+            }
+
+            const yearStats = {};
+            data.forEach(storm => {
+                if (!yearStats[storm.season]) {
+                    yearStats[storm.season] = { total: 0, count: 0, max: 0 };
+                }
+                if (storm.wind) {
+                    yearStats[storm.season].total += storm.wind;
+                    yearStats[storm.season].count++;
+                    yearStats[storm.season].max = Math.max(yearStats[storm.season].max, storm.wind);
+                }
+            });
+
+            const years = Object.keys(yearStats).sort();
+            const avgWinds = years.map(year => yearStats[year].count > 0 ? yearStats[year].total / yearStats[year].count : 0);
+            const maxWinds = years.map(year => yearStats[year].max);
+
+            charts.windTrends = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [
+                        {
+                            label: 'Average Wind Speed',
+                            data: avgWinds,
+                            borderColor: '#36A2EB',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Maximum Wind Speed',
+                            data: maxWinds,
+                            borderColor: '#FF6384',
+                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                            yAxisID: 'y'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function createCorrelationChart(data) {
+            const ctx = document.getElementById('correlationChart');
+            if (charts.correlation) {
+                charts.correlation.destroy();
+            }
+
+            const validData = data.filter(storm => storm.wind && storm.pressure);
+            const windSpeeds = validData.map(storm => storm.wind);
+            const pressures = validData.map(storm => storm.pressure);
+
+            charts.correlation = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Wind vs Pressure',
+                        data: validData.map(storm => ({
+                            x: storm.wind,
+                            y: storm.pressure
+                        })),
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Wind Speed (kt)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Pressure (hPa)'
+                            },
+                            reverse: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateStatsSummary(data) {
+            const container = document.getElementById('stats-summary');
+            
+            const totalStorms = data.length;
+            const totalWind = data.reduce((sum, storm) => sum + (storm.wind || 0), 0);
+            const avgWind = totalStorms > 0 ? totalWind / totalStorms : 0;
+            const maxWind = Math.max(...data.map(storm => storm.wind || 0));
+            const minPressure = Math.min(...data.map(storm => storm.pressure || Infinity));
+            
+            const basinCounts = {};
+            data.forEach(storm => {
+                basinCounts[storm.basin] = (basinCounts[storm.basin] || 0) + 1;
+            });
+            const mostActiveBasin = Object.keys(basinCounts).reduce((a, b) => 
+                basinCounts[a] > basinCounts[b] ? a : b, '');
+
+            container.innerHTML = `
+                <div class="stat-row">
+                    <span class="stat-label">Total Storms:</span>
+                    <span class="stat-value">${totalStorms.toLocaleString()}</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Average Wind Speed:</span>
+                    <span class="stat-value">${avgWind.toFixed(1)} kt</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Maximum Wind Speed:</span>
+                    <span class="stat-value">${maxWind} kt</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Minimum Pressure:</span>
+                    <span class="stat-value">${minPressure === Infinity ? 'N/A' : minPressure} hPa</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Most Active Basin:</span>
+                    <span class="stat-value">${mostActiveBasin}</span>
+                </div>
+            `;
+        }
+
+        function generateInsights(data) {
+            const container = document.getElementById('insights-content');
+            
+            const totalStorms = data.length;
+            const years = [...new Set(data.map(storm => storm.season))];
+            const yearSpan = years.length;
+            const avgStormsPerYear = totalStorms / yearSpan;
+            
+            const intenseStorms = data.filter(storm => storm.wind >= 113).length;
+            const intensePercentage = (intenseStorms / totalStorms * 100).toFixed(1);
+            
+            const basinCounts = {};
+            data.forEach(storm => {
+                basinCounts[storm.basin] = (basinCounts[storm.basin] || 0) + 1;
+            });
+            const mostActiveBasin = Object.keys(basinCounts).reduce((a, b) => 
+                basinCounts[a] > basinCounts[b] ? a : b, '');
+
+            container.innerHTML = `
+                <div class="insight-card">
+                    <h4><i class="fas fa-chart-line"></i> Storm Frequency</h4>
+                    <p>Over ${yearSpan} years, there were an average of ${avgStormsPerYear.toFixed(1)} storms per year, totaling ${totalStorms.toLocaleString()} storms.</p>
+                </div>
+                <div class="insight-card">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Intense Storms</h4>
+                    <p>${intenseStorms.toLocaleString()} storms (${intensePercentage}%) reached Category 4 or 5 intensity (≥113 kt).</p>
+                </div>
+                <div class="insight-card">
+                    <h4><i class="fas fa-globe-americas"></i> Basin Activity</h4>
+                    <p>The ${mostActiveBasin} basin was the most active with ${basinCounts[mostActiveBasin].toLocaleString()} storms.</p>
+                </div>
+            `;
+        }
+
+        function getColor(index, alpha = 1) {
+            const colors = [
+                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+            ];
+            return colors[index % colors.length].replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+        }
+    </script>
+</body>
+</html> 

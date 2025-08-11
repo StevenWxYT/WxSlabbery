@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IBTrACS Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='ibtracs.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-hurricane"></i>
+                <span>IBTrACS</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/dashboard" class="nav-link active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="/storm-tracker" class="nav-link"><i class="fas fa-map-marked-alt"></i> Storm Tracker</a></li>
+                <li><a href="/analytics" class="nav-link"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1><i class="fas fa-chart-line"></i> IBTrACS Dashboard</h1>
+            <p>Comprehensive overview of tropical cyclone data</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-cloud-showers-heavy"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="total-storms">-</h3>
+                    <p>Total Storms</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="total-seasons">-</h3>
+                    <p>Seasons</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="total-basins">-</h3>
+                    <p>Ocean Basins</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-wind"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="max-wind">-</h3>
+                    <p>Max Wind (kt)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-pie"></i> Basin Distribution</h3>
+                <canvas id="basinChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-line"></i> Storms by Season</h3>
+                <canvas id="seasonChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-bar"></i> Wind Speed Distribution</h3>
+                <canvas id="windChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-area"></i> Pressure Distribution</h3>
+                <canvas id="pressureChart"></canvas>
+            </div>
+        </div>
+
+        <div class="recent-storms">
+            <h3><i class="fas fa-clock"></i> Recent Storms</h3>
+            <div id="recent-storms-list" class="storms-list"></div>
+        </div>
+    </main>
+
+    <script>
+        // Load dashboard data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+
+        async function loadDashboardData() {
+            try {
+                const response = await fetch('/api/statistics');
+                const data = await response.json();
+                
+                // Update stats
+                document.getElementById('total-storms').textContent = data.total_storms.toLocaleString();
+                document.getElementById('total-seasons').textContent = data.total_seasons;
+                document.getElementById('total-basins').textContent = data.total_basins;
+                document.getElementById('max-wind').textContent = data.intensity_stats.max_wind || 'N/A';
+
+                // Create charts
+                createBasinChart(data.basin_distribution);
+                createSeasonChart(data.season_distribution);
+                
+                // Load recent storms
+                loadRecentStorms();
+                
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        function createBasinChart(basinData) {
+            const ctx = document.getElementById('basinChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: basinData.map(item => item.basin),
+                    datasets: [{
+                        data: basinData.map(item => item.count),
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                            '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function createSeasonChart(seasonData) {
+            const ctx = document.getElementById('seasonChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: seasonData.map(item => item.season),
+                    datasets: [{
+                        label: 'Number of Storms',
+                        data: seasonData.map(item => item.count),
+                        borderColor: '#36A2EB',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        async function loadRecentStorms() {
+            try {
+                const response = await fetch('/api/ibtracs?limit=10');
+                const storms = await response.json();
+                
+                const container = document.getElementById('recent-storms-list');
+                container.innerHTML = '';
+                
+                storms.forEach(storm => {
+                    const stormCard = document.createElement('div');
+                    stormCard.className = 'storm-card';
+                    stormCard.innerHTML = `
+                        <div class="storm-info">
+                            <h4>${storm.name || 'Unnamed'} (${storm.season})</h4>
+                            <p><strong>Basin:</strong> ${storm.basin || 'N/A'}</p>
+                            <p><strong>Wind:</strong> ${storm.wind || 'N/A'} kt</p>
+                            <p><strong>Pressure:</strong> ${storm.pressure || 'N/A'} hPa</p>
+                        </div>
+                    `;
+                    container.appendChild(stormCard);
+                });
+                
+            } catch (error) {
+                console.error('Error loading recent storms:', error);
+            }
+        }
+    </script>
+</body>
+</html> 

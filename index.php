@@ -17,12 +17,12 @@ if (!isset($_SESSION['username'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🌪️ Weather Dashboard</title>
-  <!-- <link rel="icon" type="image/png" href="/img/favicon-96x96.png" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
-  <link rel="shortcut icon" href="/img/favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" href="./img/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="./img/favicon.svg" />
+  <link rel="shortcut icon" href="./img/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png" />
   <meta name="apple-mobile-web-app-title" content="StevenWx" />
-  <link rel="manifest" href="/img/site.webmanifest" /> -->
+  <link rel="manifest" href="./img/site.webmanifest" />
   <link rel="stylesheet" href="master.css">
   <script>
     window.addEventListener("DOMContentLoaded", () => {

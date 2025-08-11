@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IBTrACS Storm Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='ibtracs.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-hurricane"></i>
+                <span>IBTrACS</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/dashboard" class="nav-link"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="/storm-tracker" class="nav-link active"><i class="fas fa-map-marked-alt"></i> Storm Tracker</a></li>
+                <li><a href="/analytics" class="nav-link"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1><i class="fas fa-map-marked-alt"></i> Storm Tracker</h1>
+            <p>Interactive map for tracking tropical cyclone paths</p>
+        </header>
+
+        <div class="tracker-container">
+            <div class="tracker-sidebar">
+                <div class="search-panel">
+                    <h3><i class="fas fa-search"></i> Search Storms</h3>
+                    <div class="search-controls">
+                        <div class="filter-group">
+                            <label for="tracker-name">Storm Name:</label>
+                            <input type="text" id="tracker-name" placeholder="Enter storm name...">
+                        </div>
+                        <div class="filter-group">
+                            <label for="tracker-year">Year:</label>
+                            <select id="tracker-year">
+                                <option value="">All Years</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="tracker-basin">Basin:</label>
+                            <select id="tracker-basin">
+                                <option value="">All Basins</option>
+                            </select>
+                        </div>
+                        <button class="search-btn" onclick="searchStorms()">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+
+                <div class="storms-list-panel">
+                    <h3><i class="fas fa-list"></i> Storms</h3>
+                    <div id="storms-list" class="storms-list"></div>
+                </div>
+
+                <div class="storm-details-panel" id="storm-details" style="display: none;">
+                    <h3><i class="fas fa-info-circle"></i> Storm Details</h3>
+                    <div id="storm-info"></div>
+                </div>
+            </div>
+
+            <div class="map-container">
+                <div id="storm-map"></div>
+                <div class="map-controls">
+                    <button class="map-btn" onclick="clearMap()">
+                        <i class="fas fa-trash"></i> Clear Map
+                    </button>
+                    <button class="map-btn" onclick="toggleHeatmap()">
+                        <i class="fas fa-fire"></i> Toggle Heatmap
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let map;
+        let currentMarkers = [];
+        let currentPolylines = [];
+        let heatmapLayer = null;
+        let heatmapData = [];
+
+        // Initialize map
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap();
+            loadFilterOptions();
+            searchStorms();
+        });
+
+        function initializeMap() {
+            map = L.map('storm-map').setView([20, 0], 2);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Add ocean overlay
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                opacity: 0.7
+            }).addTo(map);
+        }
+
+        async function loadFilterOptions() {
+            try {
+                // Load years
+                const yearsResponse = await fetch('/api/seasons');
+                const years = await yearsResponse.json();
+                const yearSelect = document.getElementById('tracker-year');
+                years.forEach(year => {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    yearSelect.appendChild(option);
+                });
+
+                // Load basins
+                const basinsResponse = await fetch('/api/basins');
+                const basins = await basinsResponse.json();
+                const basinSelect = document.getElementById('tracker-basin');
+                basins.forEach(basin => {
+                    const option = document.createElement('option');
+                    option.value = basin;
+                    option.textContent = basin;
+                    basinSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading filter options:', error);
+            }
+        }
+
+        async function searchStorms() {
+            const name = document.getElementById('tracker-name').value;
+            const year = document.getElementById('tracker-year').value;
+            const basin = document.getElementById('tracker-basin').value;
+
+            try {
+                const response = await fetch(`/api/ibtracs?name=${name}&season=${year}&basin=${basin}&limit=100`);
+                const storms = await response.json();
+                displayStormsList(storms);
+            } catch (error) {
+                console.error('Error searching storms:', error);
+            }
+        }
+
+        function displayStormsList(storms) {
+            const container = document.getElementById('storms-list');
+            container.innerHTML = '';
+
+            storms.forEach(storm => {
+                const stormItem = document.createElement('div');
+                stormItem.className = 'storm-item';
+                stormItem.innerHTML = `
+                    <div class="storm-item-header">
+                        <h4>${storm.name || 'Unnamed'} (${storm.season})</h4>
+                        <span class="basin-badge">${storm.basin || 'N/A'}</span>
+                    </div>
+                    <div class="storm-item-details">
+                        <p><strong>Wind:</strong> ${storm.wind || 'N/A'} kt</p>
+                        <p><strong>Pressure:</strong> ${storm.pressure || 'N/A'} hPa</p>
+                    </div>
+                    <button class="track-btn" onclick="trackStorm('${storm.sid}')">
+                        <i class="fas fa-map-marker-alt"></i> Track
+                    </button>
+                `;
+                container.appendChild(stormItem);
+            });
+        }
+
+        async function trackStorm(sid) {
+            try {
+                const response = await fetch(`/api/storm/${sid}`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert('Storm not found');
+                    return;
+                }
+
+                displayStormDetails(data.storm);
+                plotStormTrack(data.storm, data.tracks);
+                
+            } catch (error) {
+                console.error('Error tracking storm:', error);
+            }
+        }
+
+        function displayStormDetails(storm) {
+            const container = document.getElementById('storm-info');
+            container.innerHTML = `
+                <div class="storm-detail-card">
+                    <h4>${storm.name || 'Unnamed'} (${storm.season})</h4>
+                    <p><strong>SID:</strong> ${storm.sid}</p>
+                    <p><strong>Basin:</strong> ${storm.basin || 'N/A'}</p>
+                    <p><strong>Wind Speed:</strong> ${storm.wind || 'N/A'} kt</p>
+                    <p><strong>Pressure:</strong> ${storm.pressure || 'N/A'} hPa</p>
+                    <p><strong>Location:</strong> ${storm.latitude}, ${storm.longitude}</p>
+                </div>
+            `;
+            
+            document.getElementById('storm-details').style.display = 'block';
+        }
+
+        function plotStormTrack(storm, tracks) {
+            // Clear existing markers and lines
+            clearMap();
+
+            if (!tracks || tracks.length === 0) {
+                // If no track data, just show the storm location
+                const marker = L.marker([storm.latitude, storm.longitude])
+                    .bindPopup(`
+                        <strong>${storm.name || 'Unnamed'} (${storm.season})</strong><br>
+                        Basin: ${storm.basin || 'N/A'}<br>
+                        Wind: ${storm.wind || 'N/A'} kt<br>
+                        Pressure: ${storm.pressure || 'N/A'} hPa
+                    `)
+                    .addTo(map);
+                currentMarkers.push(marker);
+                map.setView([storm.latitude, storm.longitude], 6);
+                return;
+            }
+
+            // Create track points
+            const trackPoints = tracks.map(track => [track.latitude, track.longitude]);
+            
+            // Create polyline
+            const polyline = L.polyline(trackPoints, {
+                color: getStormColor(storm.wind),
+                weight: 3,
+                opacity: 0.8
+            }).addTo(map);
+
+            currentPolylines.push(polyline);
+
+            // Add markers for start and end points
+            if (trackPoints.length > 0) {
+                const startMarker = L.marker(trackPoints[0])
+                    .bindPopup(`<strong>Start:</strong> ${storm.name || 'Unnamed'}`)
+                    .addTo(map);
+                currentMarkers.push(startMarker);
+
+                const endMarker = L.marker(trackPoints[trackPoints.length - 1])
+                    .bindPopup(`<strong>End:</strong> ${storm.name || 'Unnamed'}`)
+                    .addTo(map);
+                currentMarkers.push(endMarker);
+
+                // Fit map to track
+                map.fitBounds(polyline.getBounds());
+            }
+
+            // Add to heatmap data
+            tracks.forEach(track => {
+                heatmapData.push([track.latitude, track.longitude, track.wind || 1]);
+            });
+        }
+
+        function getStormColor(wind) {
+            if (!wind) return '#666';
+            if (wind >= 135) return '#FF0000'; // Category 5
+            if (wind >= 113) return '#FF6600'; // Category 4
+            if (wind >= 96) return '#FF9900';  // Category 3
+            if (wind >= 83) return '#FFFF00';  // Category 2
+            if (wind >= 64) return '#00FF00';  // Category 1
+            return '#00FFFF'; // Tropical Storm
+        }
+
+        function clearMap() {
+            currentMarkers.forEach(marker => map.removeLayer(marker));
+            currentPolylines.forEach(line => map.removeLayer(line));
+            currentMarkers = [];
+            currentPolylines = [];
+            
+            if (heatmapLayer) {
+                map.removeLayer(heatmapLayer);
+                heatmapLayer = null;
+            }
+        }
+
+        function toggleHeatmap() {
+            if (heatmapLayer) {
+                map.removeLayer(heatmapLayer);
+                heatmapLayer = null;
+            } else if (heatmapData.length > 0) {
+                // Simple heatmap visualization using circles
+                heatmapLayer = L.layerGroup();
+                heatmapData.forEach(point => {
+                    const circle = L.circle([point[0], point[1]], {
+                        radius: 50000,
+                        color: getStormColor(point[2]),
+                        fillColor: getStormColor(point[2]),
+                        fillOpacity: 0.3
+                    });
+                    heatmapLayer.addLayer(circle);
+                });
+                map.addLayer(heatmapLayer);
+            }
+        }
+    </script>
+</body>
+</html> 
