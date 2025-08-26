@@ -172,10 +172,10 @@ class DBFunc
         );
 
         if ($stmt->execute()) {
-            header("Location: tc_admin.php");
-            exit();
+            return true;
         } else {
             echo "Insert error: " . $stmt->error;
+            return false;
         }
     }
 
@@ -238,10 +238,10 @@ public function updateDatabase($storm_id, $name, $basin, $wind_speed, $pressure,
     $stmt->bind_param($types, ...$params);
 
     if ($stmt->execute()) {
-        header("Location: tc_admin.php");
-        exit();
+        return true;
     } else {
         echo "Update error: " . $stmt->error;
+        return false;
     }
 }
 
@@ -252,10 +252,10 @@ public function updateDatabase($storm_id, $name, $basin, $wind_speed, $pressure,
         $stmt = $this->conn->prepare("DELETE FROM tcdatabase WHERE id = ?");
         $stmt->bind_param("i", $id);
         if ($stmt->execute()) {
-            header("Location: tc_admin.php");
-            exit();
+            return true;
         } else {
             echo "Delete error: " . $stmt->error;
+            return false;
         }
     }
 

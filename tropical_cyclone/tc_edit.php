@@ -5,7 +5,7 @@ require_once '../php/function.php';
 // Initialize DB connection
 $dbConn = new DBConn();
 $conn = $dbConn->getConnection();
-$functions = new DbFunc($conn);
+$functions = new DBFunc($conn);
 
 // Check if ID is present
 if (!isset($_GET['id'])) {
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if (!empty($data['image'])): ?>
                 <div class="current-image">
                     <strong>📊 Current Best Track Image:</strong><br>
-                    <img src="../uploads/<?= htmlspecialchars($data['image']) ?>" alt="Best Track Image" style="max-width: 100%; max-height: 200px;">
+                    <img src="<?= htmlspecialchars($data['image']) ?>" alt="Best Track Image" style="max-width: 100%; max-height: 240px;">
                 </div>
             <?php endif; ?>
             <label for="image">🖼️ Replace Best Track Image (optional):</label>
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if (!empty($data['satellite_image'])): ?>
                 <div class="current-image">
                     <strong>🛰️ Current Satellite Image:</strong><br>
-                    <img src="../uploads/<?= htmlspecialchars($data['satellite_image']) ?>" alt="Satellite Image" style="max-width: 100%; max-height: 200px;">
+                    <img src="<?= htmlspecialchars($data['satellite_image']) ?>" alt="Satellite Image" style="max-width: 100%; max-height: 240px;">
                 </div>
             <?php endif; ?>
             <label for="satellite_image">📷 Replace Satellite Image (optional):</label>

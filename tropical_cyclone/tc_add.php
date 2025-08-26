@@ -4,7 +4,7 @@ require_once '../php/function.php';
 
 $dbConn = new DBConn();
 $conn = $dbConn->getConnection();
-$functions = new DbFunc($conn);
+$functions = new DBFunc($conn);
 
 $message = '';
 $success = false;

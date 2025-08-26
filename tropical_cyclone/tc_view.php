@@ -34,6 +34,41 @@ if (!$data) {
     <meta name="apple-mobile-web-app-title" content="StevenWx" />
     <link rel="manifest" href="./img/site.webmanifest" />
     <link rel="stylesheet" href="../master.css">
+    <style>
+      .cyclone-image {
+        max-width: 100%;
+        width: 100%;
+        max-height: 520px;
+        height: auto;
+        border-radius: 8px;
+        border: 1px solid #eee;
+      }
+      .image-block {
+        max-width: 900px;
+      }
+      .image-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        align-items: start;
+      }
+      @media (max-width: 768px) {
+        .image-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+    <style>
+      .cyclone-image {
+        max-width: 100%;
+        width: 100%;
+        max-height: 470px;
+        height: auto;
+        border-radius: 8px;
+        border: 1px solid #eee;
+      }
+      .image-block {
+        max-width: 900px;
+      }
+    </style>
 </head>
 
 <body>
@@ -41,19 +76,20 @@ if (!$data) {
     <div class="view-container">
         <h1>🌪️ Cyclone: <?= htmlspecialchars($data['name']) ?></h1>
 
-        <!-- Best Track Image -->
-        <?php if (!empty($data['image_best_track'])): ?>
-            <div class="image-block">
-                <h3>📍 Best Track Image</h3>
-                <img src="<?= htmlspecialchars($data['image_best_track']) ?>" alt="Best Track" class="cyclone-image">
-            </div>
-        <?php endif; ?>
-
-        <!-- Satellite Imagery -->
-        <?php if (!empty($data['image_satellite'])): ?>
-            <div class="image-block">
-                <h3>🛰️ Satellite Imagery</h3>
-                <img src="<?= htmlspecialchars($data['image_satellite']) ?>" alt="Satellite Imagery" class="cyclone-image">
+        <?php if (!empty($data['image']) || !empty($data['satellite_image'])): ?>
+            <div class="image-grid">
+                <?php if (!empty($data['image'])): ?>
+                    <div class="image-block">
+                        <h3>📍 Best Track Image</h3>
+                        <img src="<?= htmlspecialchars($data['image']) ?>" alt="Best Track" class="cyclone-image">
+                    </div>
+                <?php endif; ?>
+                <?php if (!empty($data['satellite_image'])): ?>
+                    <div class="image-block">
+                        <h3>🛰️ Satellite Imagery</h3>
+                        <img src="<?= htmlspecialchars($data['satellite_image']) ?>" alt="Satellite Imagery" class="cyclone-image">
+                    </div>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
 

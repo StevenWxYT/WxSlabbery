@@ -1,4 +1,31 @@
 /* === MASTER.CSS === */
+/* Load default web fonts (customize or replace as needed) */
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&display=swap');
+
+/* Optional local font registrations (will use if installed on the system or added to your project) */
+@font-face {
+  font-family: 'Typomoderno';
+  src: local('Typomoderno'), local('Typomoderno Regular');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Akko';
+  src: local('Akko'), local('Akko Regular');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BF_Modernista';
+  src: local('BF_Modernista'), local('BF Modernista');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --primary: #66a6ff;
@@ -13,6 +40,14 @@
   --neutral: #ccc;
   --bg: linear-gradient(270deg, #fdfbfb, #ebedee, #fdfbfb);
   --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* Typography */
+  --font-sans: 'Typomoderno', 'Akko', 'Titillium Web', 'Bahnschrift', 'BF_Modernista', 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+  --font-serif: 'Merriweather', Georgia, 'Times New Roman', serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  --body-font: 'Titillium Web', 'Bahnschrift', 'Akko', 'Typomoderno', 'BF_Modernista', 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+  --heading-font: 'Typomoderno', 'BF_Modernista', 'Akko', 'Titillium Web', 'Bahnschrift', 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+  --base-font-size: 16px;
+  --base-line-height: 1.6;
   --accent: var(--primary);
   --accent-dark: var(--primary-dark);
   --tooltip-bg: #333;
@@ -47,12 +82,17 @@
 
 html, body {
   height: 100%;
-  font-family: var(--font);
+  font-family: var(--body-font);
+  font-size: var(--base-font-size);
+  line-height: var(--base-line-height);
+  letter-spacing: 0.005em;
   background: var(--bg);
   background-size: 600% 600%;
   animation: infiniteFlow 30s ease infinite;
   color: #333;
   padding: 0 1.5rem 2rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -75,10 +115,42 @@ h1, h2, h3 {
   text-align: center;
   color: #444;
   margin-bottom: 1.5rem;
+  font-family: var(--heading-font);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
 }
 
-h2 {
-    font-size: 1.4rem;
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+
+/* Paragraphs and links */
+p {
+  margin: 0.75rem 0 1rem;
+}
+
+a {
+  color: var(--info);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code, pre, kbd, samp {
+  font-family: var(--font-mono);
+}
+
+/* Button font styling */
+.btn,
+.primary-btn,
+.secondary-btn,
+.action-btn {
+  font-family: var(--heading-font);
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 /* === MAIN CONTAINER === */

@@ -42,16 +42,14 @@ $imagePaths = $functions->getImagePathsById($id);
 $deleted = $functions->deleteDatabase($id);
 
 if ($deleted) {
-    // Delete associated image files if present
-    $uploadDir = '../uploads/';
-
+    // Delete associated image files if present (paths stored are relative like 'uploads/...')
     if (!empty($imagePaths['image'])) {
-        $img = $uploadDir . $imagePaths['image'];
+        $img = $imagePaths['image'];
         if (file_exists($img)) unlink($img);
     }
 
     if (!empty($imagePaths['satellite_image'])) {
-        $sat = $uploadDir . $imagePaths['satellite_image'];
+        $sat = $imagePaths['satellite_image'];
         if (file_exists($sat)) unlink($sat);
     }
 

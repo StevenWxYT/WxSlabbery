@@ -69,14 +69,47 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
   <link rel="stylesheet" href="../master.css">
   <style>
     img.thumb {
-      height: 50px;
-      border-radius: 4px;
+      width: 120px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #e5e5e5;
     }
 
     .thumb-na {
       color: gray;
       font-size: 0.9em;
     }
+
+    /* Redesigned action buttons */
+    .actions {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+    }
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      border: 1px solid transparent;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.05s ease;
+      user-select: none;
+      width: 100%;
+    }
+    .action-btn:active { transform: translateY(1px); }
+    .btn-view { color: #0b5ed7; border-color: #0b5ed7; background: rgba(11, 94, 215, 0.08); }
+    .btn-view:hover { background: #0b5ed7; color: #fff; }
+    .btn-edit { color: #b76a00; border-color: #b76a00; background: rgba(183, 106, 0, 0.08); }
+    .btn-edit:hover { background: #b76a00; color: #fff; }
+    .btn-delete { color: #c02c2c; border-color: #c02c2c; background: rgba(192, 44, 44, 0.08); }
+    .btn-delete:hover { background: #c02c2c; color: #fff; }
   </style>
 </head>
 
@@ -102,8 +135,8 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
   <div class="admin-buttons">
     <a class="btn" href="tc_index.php">⬅ Back to TC Index</a>
     <a class="btn" href="tc_add.php">➕ Add Cyclone</a>
-    <a class="btn" href="tc_export.php?format=csv" target="_blank">📁 Export CSV</a>
-    <a class="btn" href="tc_export.php?format=pdf" target="_blank">📄 Export PDF</a>
+    <!-- <a class="btn" href="tc_export.php?format=csv" target="_blank">📁 Export CSV</a>
+    <a class="btn" href="tc_export.php?format=pdf" target="_blank">📄 Export PDF</a> -->
   </div>
 
   <form method="GET" class="filter-form">
@@ -151,9 +184,9 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
           <tr>
             <!-- Best Track -->
             <td>
-              <?php if (!empty($row['image_best_track'])): ?>
-                <a href="<?= htmlspecialchars($row['image_best_track']) ?>" target="_blank">
-                  <img src="<?= htmlspecialchars($row['image_best_track']) ?>" alt="Best Track" class="thumb">
+              <?php if (!empty($row['image'])): ?>
+                <a href="<?= htmlspecialchars($row['image']) ?>" target="_blank">
+                  <img src="<?= htmlspecialchars($row['image']) ?>" alt="Best Track" class="thumb">
                 </a>
               <?php else: ?>
                 <span class="thumb-na">N/A</span>
@@ -162,9 +195,9 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
 
             <!-- Satellite -->
             <td>
-              <?php if (!empty($row['image_satellite'])): ?>
-                <a href="<?= htmlspecialchars($row['image_satellite']) ?>" target="_blank">
-                  <img src="<?= htmlspecialchars($row['image_satellite']) ?>" alt="Satellite" class="thumb">
+              <?php if (!empty($row['satellite_image'])): ?>
+                <a href="<?= htmlspecialchars($row['satellite_image']) ?>" target="_blank">
+                  <img src="<?= htmlspecialchars($row['satellite_image']) ?>" alt="Satellite" class="thumb">
                 </a>
               <?php else: ?>
                 <span class="thumb-na">N/A</span>
@@ -185,9 +218,17 @@ $result = $conn->query("SELECT * FROM tcdatabase $whereClause ORDER BY start_dat
 
             <!-- Actions -->
             <td>
-              <a class="view-btn" href="tc_view.php?id=<?= $row['id'] ?>">🔍 View</a>
-              <a class="edit-btn" href="tc_edit.php?id=<?= $row['id'] ?>">✏️ Edit</a>
-              <a class="delete-btn" href="tc_delete.php?id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this record?');">🗑️ Delete</a>
+              <div class="actions">
+                <a class="action-btn btn-view" href="tc_view.php?id=<?= $row['id'] ?>" title="View cyclone">
+                  🔍 <span>View</span>
+                </a>
+                <a class="action-btn btn-edit" href="tc_edit.php?id=<?= $row['id'] ?>" title="Edit cyclone">
+                  ✏️ <span>Edit</span>
+                </a>
+                <a class="action-btn btn-delete" href="tc_delete.php?id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this record?');" title="Delete cyclone">
+                  🗑️ <span>Delete</span>
+                </a>
+              </div>
             </td>
           </tr>
         <?php endwhile; ?>
